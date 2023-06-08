@@ -1,0 +1,14 @@
+{
+    "name": "james/c99",
+    "autoload": {
+        "psr-4": {
+            "James\\C99\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "darkwolf"
+        }
+    ],
+    "require": {}
+}
